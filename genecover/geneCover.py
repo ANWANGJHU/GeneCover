@@ -1,4 +1,3 @@
-
 import gurobipy as grb
 import numpy as np
 from scipy.stats import spearmanr
@@ -103,6 +102,7 @@ def covering(Z, minSize=1, alpha=0.05, weights = 1., output=None, callBack = Non
 
 def GeneCover(num_marker, corr_mat, w = 1, m = 3,interval = 0, lambdaMax = .3, lambdaMin = 0.05, timeLimit = 600, output = 0):
     """
+    Args:
     :param num_marker: number of markers to select
     :param corr_mat: gene-gene correlation matrix
     :param interval: allowed deviation from num_marker
@@ -111,6 +111,9 @@ def GeneCover(num_marker, corr_mat, w = 1, m = 3,interval = 0, lambdaMax = .3, l
     :param lambdaMin: minimum threshold for gene-gene correlation
     :param timeLimit: time limit for the optimization
     :param ouput: whether to print the optimization process. (Set to 1 to print)
+
+    Returns:
+    :return: the list of indices of the selected markers
 
     """
     epsilon = (lambdaMax + lambdaMin)/2
@@ -153,9 +156,10 @@ def GeneCover(num_marker, corr_mat, w = 1, m = 3,interval = 0, lambdaMax = .3, l
     print("Best Epsilon: ", best_epsilon)
     return markers
 
-def Iterative_GeneCover(incremental_sizes,corr_mat,  w = 1,m = 3, interval = 0, lambdaMin = .05,lambdaMax = .3, timeLimit = 600, output = 0):
+def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, interval = 0, lambdaMin = .05,lambdaMax = .3, timeLimit = 600, output = 0):
     
     """
+    Args:
     :param corr_mat: gene-gene correlation matrix
     :param incremental_sizes: a tuple of number of markers to select at each iteration
     :param w: an array of weights for each gene (the higher the weight, the higher cost to select the gene)
@@ -163,6 +167,9 @@ def Iterative_GeneCover(incremental_sizes,corr_mat,  w = 1,m = 3, interval = 0, 
     :param lambdaMin: minimum threshold for gene-gene correlation
     :param timeLimit: time limit for the optimization
     :param output: whether to print the optimization process. (Set to 1 to print)
+
+    Returns:
+    :return: a list of lists of indices of the selected markers at each iteration
     """
     MARKERS = []
     print("Iteration 1")
@@ -180,8 +187,13 @@ def Iterative_GeneCover(incremental_sizes,corr_mat,  w = 1,m = 3, interval = 0, 
 
 def gene_gene_correlation(X, method = 'spearman'):
     """
+    Args:
     :param X: an numpy array of size N x d, where N is the number of cells / spots and d is the number of genes
+
+    Returns:
+    :return: gene-gene correlation matrix of dimension d x d
     """
+
     if method == 'spearman':
         corr_mat, _ = spearmanr(X)
     if method == 'pearson':
