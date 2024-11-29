@@ -123,9 +123,15 @@ def GeneCover(num_marker, corr_mat, w = 1, m = 3,interval = 0, lambdaMax = .3, l
     cov_sol = covering(G_v3, minSize=1, alpha=0.0, weights=w, timeLimit=timeLimit, output = output)
     cov_sol = selection[np.array(cov_sol.x)[:len(selection)] > 0.5]
     markers = []
+    num_batches = G_v3.shape[0] // G_v3.shape[1]
+    num_genes = G_v3.shape[1]
     for i in cov_sol:
-        if G_v3[i].sum() >= m:
-            markers.append(i)
+        if num_batches > 1:
+            if G_v3[[i + j * num_genes for j in range(num_batches)]].sum(axis = 1).min() >= m:
+                markers.append(i)
+        else:
+            if G_v3[i].sum() >= m:
+                markers.append(i)
     n_markers = len(markers)
     current_gap = abs(n_markers - num_marker)
     best_marker_length_gap = current_gap
@@ -141,9 +147,13 @@ def GeneCover(num_marker, corr_mat, w = 1, m = 3,interval = 0, lambdaMax = .3, l
         cov_sol = selection[np.array(cov_sol.x)[:len(selection)] > 0.5]
         markers = []
         for i in cov_sol:
-            if G_v3[i].sum() >= m:
-                markers.append(i)
-        n_markers = len(markers)
+            if num_batches > 1:
+                if G_v3[[i + j * num_genes for j in range(num_batches)]].sum(axis = 1).min() >= m:
+                    markers.append(i)
+            else:
+                if G_v3[i].sum() >= m:
+                    markers.append(i)
+            n_markers = len(markers)
 
         current_gap = abs(n_markers - num_marker)
         if current_gap < best_marker_length_gap:
@@ -166,11 +176,13 @@ def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, interval = 0, lambd
     :param lambdaMax: maximum threshold for gene-gene correlation
     :param lambdaMin: minimum threshold for gene-gene correlation
     :param timeLimit: time limit for the optimization
-    :param output: whether to print the optimization process. (Set to 1 to print)
+    :param output: wheth er to print the optimization process. (Set to 1 to print)
 
     Returns:
     :return: a list of lists of indices of the selected markers at each iteration
     """
+    num_batches = corr_mat.shape[0] // corr_mat.shape[1]
+    num_genes = corr_mat.shape[1]
     MARKERS = []
     print("Iteration 1")
     markers = GeneCover(incremental_sizes[0], corr_mat, w = w, m =m, interval = interval , lambdaMax = lambdaMax, lambdaMin = lambdaMin, timeLimit = timeLimit, output=output)
@@ -179,7 +191,8 @@ def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, interval = 0, lambd
     remaining_genes_idx_abs = np.setdiff1d(selection, markers)
     for t, size in enumerate(incremental_sizes[1:]): 
         print("Iteration ", t+2)
-        corr_mat_remain = corr_mat[remaining_genes_idx_abs][:,remaining_genes_idx_abs]
+        remaining_genes_idx_abs_batches = np.array([remaining_genes_idx_abs + j * num_genes for j in range(num_batches)]).flatten()
+        corr_mat_remain = corr_mat[remaining_genes_idx_abs_batches][:,remaining_genes_idx_abs]
         markers = GeneCover(size, corr_mat_remain, w = w[remaining_genes_idx_abs], m =m, lambdaMin= lambdaMin,lambdaMax=lambdaMax, timeLimit = timeLimit, output=output)
         MARKERS.append(remaining_genes_idx_abs[markers])
         remaining_genes_idx_abs = np.setdiff1d(remaining_genes_idx_abs, [j for i in MARKERS for j in i])  
@@ -188,14 +201,25 @@ def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, interval = 0, lambd
 def gene_gene_correlation(X, method = 'spearman'):
     """
     Args:
-    :param X: an numpy array of size N x d, where N is the number of cells / spots and d is the number of genes
+    :param X: an numpy array of size N x d, where N is the number of cells / spots and d is the number of genes; 
+    X can also be a list of numpy arrays where each array in the list is the gene expression matrix from a batch / sample (the number of genes should be the same across all batches / samples)  
+    
 
     Returns:
     :return: gene-gene correlation matrix of dimension d x d
     """
-
-    if method == 'spearman':
-        corr_mat, _ = spearmanr(X)
-    if method == 'pearson':
-        corr_mat = np.corrcoef(X.T)
+    if type(X) ==list:
+        corr_mat_list = []
+        for x in X:
+            if method == 'spearman':
+                corr_mat, _ = spearmanr(x)
+            if method == 'pearson':
+                corr_mat = np.corrcoef(x.T)
+            corr_mat_list.append(corr_mat)  
+        corr_mat = np.vstack(corr_mat_list)
+    else :
+        if method == 'spearman':
+            corr_mat, _ = spearmanr(X)
+        if method == 'pearson':
+            corr_mat = np.corrcoef(X.T)
     return corr_mat
