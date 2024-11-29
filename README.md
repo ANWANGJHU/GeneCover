@@ -13,15 +13,17 @@ To install GeneCover, run:
 GeneCover requires Gurobi as a dependency for optimization. To install Gurobi in python, please follow [Gurobi Installation Guide](https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python). Gurobi requires a license to use the interface. For information on how to obtain a license, please refer to  [this Gurobi support article](https://support.gurobi.com/hc/en-us/articles/12684663118993-How-do-I-obtain-a-Gurobi-license).
 
 ### Tutorial 
-This tutorial provides a simple example of how to run GeneCover on your data.
+This tutorial provides a simple example of how to run GeneCover on your data. Note: GeneCover support input datasets from multiple batches.
 
 ```python 
 from genecover import *
 import numpy as np
 """
 User Input: 
-data - an array of size N * d that store the log-normalized count expression data
-w - an array of size d that records cost of each gene. (By default, we let w = np.ones(data.shape[1]))
+data - an array of size N * d that store the log-normalized count expression data, where N is the number of cells and d is the number of genes.
+Note: data can also be a list of numpy arrays with the same number of genes d, and the pipeline for generating marker panel is the same as using one dataset.
+
+w - an array of size d that records cost of each gene. Users can simply set w = np.ones(data.shape[1]).
 """
 
 # Compute the gene-gene correlation matrix
