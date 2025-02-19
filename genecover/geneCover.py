@@ -100,7 +100,7 @@ def covering(Z, minSize=1, alpha=0.05, weights = 1., output=None, callBack = Non
     return cov
 
 
-def GeneCover(num_marker, corr_mat, w = 1, m = 3,interval = 0, lambdaMax = .3, lambdaMin = 0.05, timeLimit = 600, output = 0):
+def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambdaMin = 0.05, timeLimit = 600, output = 0):
     """
     Args:
     :param num_marker: number of markers to select
