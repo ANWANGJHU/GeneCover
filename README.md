@@ -15,7 +15,7 @@ To install GeneCover, run:
 GeneCover requires Gurobi as a dependency for optimization. To install Gurobi in python, please follow [Gurobi Installation Guide](https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python). Gurobi requires a license to use the interface. For information on how to obtain a license, please refer to  [this Gurobi support article](https://support.gurobi.com/hc/en-us/articles/12684663118993-How-do-I-obtain-a-Gurobi-license).
 
 ### Tutorial 
-This tutorial provides a simple example of how to run GeneCover on your data. Note: GeneCover support input datasets from multiple batches.
+This tutorial provides a simple example of how to run GeneCover on your data. Note: GeneCover support input datasets from multiple samples / batches.
 
 ```python 
 from genecover import *
