@@ -2,7 +2,7 @@
 
 GeneCover is a computational tool designed for scRNA-seq and spatial transcriptomics data to select pre-labeling marker genes based on gene-gene correlations.
 
-![graphical abstract](graphical-abstract-v1.png)
+![graphical abstract](graphical-abstract-v1-with-bg.png)
 
 ### Installation
 To install GeneCover, run:
