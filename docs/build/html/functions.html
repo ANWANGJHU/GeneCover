@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeneCover Functions Reference &mdash; GeneCover Documentation  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Basic Usage" href="basic-usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GeneCover Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basic-usage.html">Basic Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GeneCover Functions Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GeneCover Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GeneCover Functions Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/functions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="genecover-functions-reference">
+<span id="functions"></span><h1>GeneCover Functions Reference<a class="headerlink" href="#genecover-functions-reference" title="Link to this heading"></a></h1>
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">GeneCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_marker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greedy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#GeneCover"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Selects marker genes based on gene-gene correlation using combinatorial optimization or a greedy heuristic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_marker</strong> (<em>int</em>) – Desired number of markers to select.</p></li>
+<li><p><strong>corr_mat</strong> (<em>np.ndarray</em>) – Gene-gene correlation matrix.</p></li>
+<li><p><strong>interval</strong> (<em>int</em>) – Allowed deviation from <cite>num_marker</cite>. The final number of markers may vary within this range.</p></li>
+<li><p><strong>w</strong> (<em>np.ndarray</em>) – An array of weights for the genes. Higher weights indicate higher cost for selection.</p></li>
+<li><p><strong>lambdaMax</strong> (<em>float</em>) – Maximum threshold for acceptable gene-gene correlation.</p></li>
+<li><p><strong>lambdaMin</strong> (<em>float</em>) – Minimum threshold for acceptable gene-gene correlation.</p></li>
+<li><p><strong>timeLimit</strong> (<em>float</em>) – Time limit (in seconds) for the optimization.</p></li>
+<li><p><strong>ouput</strong> (<em>int</em>) – Whether to print the optimization process. Set to 1 to enable.</p></li>
+<li><p><strong>greedy</strong> (<em>bool</em>) – Whether to use a greedy algorithm for set cover instead of the Gurobi solver. Default: False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Indices of the selected marker genes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Iterative_GeneCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incremental_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greedy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#Iterative_GeneCover"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Performs iterative marker gene selection using the GeneCover algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corr_mat</strong> (<em>np.ndarray</em>) – Gene-gene correlation matrix of shape (d, d).</p></li>
+<li><p><strong>incremental_sizes</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – A list indicating the number of markers to select at each iteration.</p></li>
+<li><p><strong>w</strong> (<em>np.ndarray</em>) – An array of weights for each gene. Higher weights indicate higher cost for selection.</p></li>
+<li><p><strong>lambdaMax</strong> (<em>float</em>) – Maximum threshold for gene-gene correlation.</p></li>
+<li><p><strong>lambdaMin</strong> (<em>float</em>) – Minimum threshold for gene-gene correlation.</p></li>
+<li><p><strong>timeLimit</strong> (<em>float</em>) – Time limit (in seconds) for the optimization.</p></li>
+<li><p><strong>output</strong> (<em>int</em>) – Whether to print the optimization process. Set to 1 to enable.</p></li>
+<li><p><strong>greedy</strong> (<em>bool</em>) – Whether to use the greedy set cover algorithm instead of the Gurobi solver. Default: False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list where each element is a list of indices of the selected marker genes at the corresponding iteration.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[List[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">covering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callBack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poolSolutions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poolSearchMode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poolGap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LogToConsole</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#covering"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Solves a weighted gene selection problem using a Gurobi-based optimization model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Z</strong> (<em>np.ndarray</em>) – A binary matrix of shape (N, d), where N is the number of samples and d is the number of genes.</p></li>
+<li><p><strong>minSize</strong> (<em>int</em>) – The minimum number of genes to select.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – The minimum fraction of samples that must be covered.</p></li>
+<li><p><strong>weights</strong> (<em>np.ndarray</em>) – A 1D array of weights for each gene. Higher weights indicate higher cost for selection.</p></li>
+<li><p><strong>output</strong> (<em>int</em>) – Enables or disables solver output. Set to 1 to print optimization details, 0 to suppress.</p></li>
+<li><p><strong>callBack</strong> (<em>Callable</em>) – A callback function to be invoked during optimization.</p></li>
+<li><p><strong>poolSolutions</strong> (<em>int</em>) – Number of solutions to store in the solution pool. See: <a class="reference external" href="https://www.gurobi.com/documentation/current/refman/poolsolutions.html">https://www.gurobi.com/documentation/current/refman/poolsolutions.html</a></p></li>
+<li><p><strong>poolSearchMode</strong> (<em>int</em>) – Mode for exploring the MIP search tree. See: <a class="reference external" href="https://www.gurobi.com/documentation/current/refman/poolsearchmode.html">https://www.gurobi.com/documentation/current/refman/poolsearchmode.html</a></p></li>
+<li><p><strong>poolGap</strong> (<em>float</em>) – Relative MIP optimality gap for accepting solutions into the pool. See:https://www.gurobi.com/documentation/current/refman/poolgap.html</p></li>
+<li><p><strong>timeLimit</strong> (<em>float</em>) – Time limit (in seconds) for the optimization run.</p></li>
+<li><p><strong>LogToConsole</strong> (<em>int</em>) – Whether to print the optimization log. Set to 1 to enable.</p></li>
+<li><p><strong>restart</strong> (<em>gurobipy.Model</em>) – A Gurobi model instance to restart the optimization from.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Indices of the selected genes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">gene_gene_correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spearman'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#gene_gene_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Compute the gene-gene correlation matrix from the gene expression matrix X.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em><em> or </em><em>List</em><em>[</em><em>np.ndarray</em><em>]</em>) – A matrix of shape (N, d), where N is the number of cells/spots and d is the number of genes.
+Alternatively, a list of such matrices (from different batches/samples) with consistent gene dimensions.</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Method used to compute correlation. Must be either ‘spearman’ or ‘pearson’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A gene-gene correlation matrix of shape (d, d).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">greedy_weighted_set_cover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#greedy_weighted_set_cover"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Greedy heuristic for the weighted set cover problem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Z</strong> (<em>np.ndarray</em>) – A binary matrix of shape (n_elements, m_sets), where <cite>Z[i, j] == 1</cite>
+indicates that set <cite>j</cite> covers element <cite>i</cite>.</p></li>
+<li><p><strong>w</strong> (<em>np.ndarray</em>) – A 1D array of length <cite>m_sets</cite> representing the weight of each set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Indices of the selected sets (column indices of <cite>Z</cite>) that form a cover.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic-usage.html" class="btn btn-neutral float-left" title="Basic Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, An Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

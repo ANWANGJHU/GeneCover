@@ -1,0 +1,22 @@
+.. _introduction:
+
+Introduction
+============
+
+GeneCover is a combinatorial method for label-free marker gene selection based on gene-gene correlation.
+
+Installation
+------------
+
+To install GeneCover, run:
+
+.. code-block:: bash
+
+    pip install genecover
+
+Dependencies:
+    - Python >= 3.8
+    - numpy, scipy, gurobipy
+
+
+Source Code: https://github.com/ANWANGJHU/GeneCover

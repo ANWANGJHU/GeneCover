@@ -2,72 +2,60 @@ import gurobipy as grb
 import numpy as np
 from scipy.stats import spearmanr
 
-def greedy_weighted_set_cover(Z, w) :
+
+def gene_gene_correlation(X, method = 'spearman'):
     """
-    Greedy heuristic for the weighted set-cover problem,
-    where Z has shape (n_elements, m_sets):
-        Z[i, j] == 1 means *set j* covers *element i*.
-    w[j] is the weight of set j.
+    Compute the gene-gene correlation matrix from the gene expression matrix X.
 
-    Returns the list of selected set-indices (column indices).
+    Args:
+        X (np.ndarray or List[np.ndarray]): A matrix of shape (N, d), where N is the number of cells/spots and d is the number of genes. 
+            Alternatively, a list of such matrices (from different batches/samples) with consistent gene dimensions.
+        method (str): Method used to compute correlation. Must be either 'spearman' or 'pearson'.
+
+    Returns:
+        np.ndarray: A gene-gene correlation matrix of shape (d, d).
     """
-    n, m = Z.shape
-    # which elements are still uncovered
-    uncovered = np.ones(n, dtype=bool)
-    # which sets are still available
-    available = np.ones(m, dtype=bool)
-    selected = []
 
-    while uncovered.any():
-        # For each set j: how many of the still-uncovered elements it would cover?
-        # Z[uncovered] is an array of shape (#uncovered_elements, m)
-        cover_counts = Z[uncovered].sum(axis=0)  # shape (m,)
-        # zero out the ones we've already taken
-        cover_counts = np.where(available, cover_counts, 0)
-
-        # fast-path: if the best we can do is cover exactly one element per set,
-        # grab them all at once and be done
-        if cover_counts.max() == 1:
-            singletons = np.where((available) & (cover_counts == 1))[0]
-            selected.extend(singletons.tolist())
-            break
-
-        # otherwise pick the set with max (covered_new_elems / weight)
-        nonzero = cover_counts > 0
-        if not nonzero.any():
-            # nothing left can cover any new element
-            break
-
-        ratios = np.zeros(m, dtype=float)
-        ratios[nonzero] = cover_counts[nonzero] / w[nonzero]
-        best = int(ratios.argmax())
-        selected.append(best)
-
-        # mark its covered elements as now covered
-        # Z[:, best] is the column for set "best"
-        uncovered &= ~Z[:, best].astype(bool)
-        # and remove that set from future consideration
-        available[best] = False
-    return selected
+    if type(X) ==list:
+        corr_mat_list = []
+        for x in X:
+            if method == 'spearman':
+                corr_mat, _ = spearmanr(x)
+            if method == 'pearson':
+                corr_mat = np.corrcoef(x.T)
+            corr_mat_list.append(corr_mat)  
+        corr_mat = np.vstack(corr_mat_list)
+    else :
+        if method == 'spearman':
+            corr_mat, _ = spearmanr(X)
+        if method == 'pearson':
+            corr_mat = np.corrcoef(X.T)
+    return corr_mat
 
 
 def covering(Z, minSize=1, alpha=0.05, weights = 1., output=None, callBack = None,
              poolSolutions=None, poolSearchMode=None, poolGap = None, timeLimit=None, LogToConsole= 1,restart=None):
     """
-    :param Z: a binary matrix of size N x d, where N is the number of samples and d is the number of genes
-    :param minSize: the minimum number of genes to select
-    :param alpha: the minimum fraction of samples that should be covered
-    :param weights: an array of weights for each gene (the higher the weight, the higher cost to select the gene)
-    :param output: Enables or disables solver output. Set to 1 to print the optimization process and 0 to disable it.
-    :param callBack: a callback function to be called during optimization
-    :param poolSolutions: the number of solutions to store in the pool: https://www.gurobi.com/documentation/current/refman/poolsolutions.html#parameter:PoolSolutions 
-    :param poolSearchMode: modes for exploring the MIP search tree: https://www.gurobi.com/documentation/current/refman/poolsearchmode.html#parameter:PoolSearchMode 
-    :param poolGap: the relative MIP optimality gap for the pool: https://www.gurobi.com/documentation/current/refman/poolgap.html#parameter:PoolGap 
-    :param timeLimit: time limit for the optimization
-    :param LogToConsole: whether to print the optimization log. (Set to 1 to print)
-    :param restart: a Gurobi model to restart the optimization process
+    Solves a weighted gene selection problem using a Gurobi-based optimization model.
 
+    Args:
+        Z (np.ndarray): A binary matrix of shape (N, d), where N is the number of samples and d is the number of genes.
+        minSize (int): The minimum number of genes to select.
+        alpha (float): The minimum fraction of samples that must be covered.
+        weights (np.ndarray): A 1D array of weights for each gene. Higher weights indicate higher cost for selection.
+        output (int): Enables or disables solver output. Set to 1 to print optimization details, 0 to suppress.
+        callBack (Callable): A callback function to be invoked during optimization.
+        poolSolutions (int): Number of solutions to store in the solution pool. See: https://www.gurobi.com/documentation/current/refman/poolsolutions.html
+        poolSearchMode (int): Mode for exploring the MIP search tree. See: https://www.gurobi.com/documentation/current/refman/poolsearchmode.html
+        poolGap (float): Relative MIP optimality gap for accepting solutions into the pool. See:https://www.gurobi.com/documentation/current/refman/poolgap.html
+        timeLimit (float): Time limit (in seconds) for the optimization run.
+        LogToConsole (int): Whether to print the optimization log. Set to 1 to enable.
+        restart (gurobipy.Model): A Gurobi model instance to restart the optimization from.
+
+    Returns:
+        List[int]: Indices of the selected genes.
     """
+
     if restart is not None:
         cov = restart
         if output is not None:
@@ -148,22 +136,80 @@ def covering(Z, minSize=1, alpha=0.05, weights = 1., output=None, callBack = Non
         cov.optimize(callBack)
     return cov
 
+
+def greedy_weighted_set_cover(Z, w) :
+    """
+    Greedy heuristic for the weighted set cover problem.
+
+    Args:
+        Z (np.ndarray): A binary matrix of shape (n_elements, m_sets), where `Z[i, j] == 1` 
+            indicates that set `j` covers element `i`.
+        w (np.ndarray): A 1D array of length `m_sets` representing the weight of each set.
+
+    Returns:
+        List[int]: Indices of the selected sets (column indices of `Z`) that form a cover.
+    """
+
+    n, m = Z.shape
+    # which elements are still uncovered
+    uncovered = np.ones(n, dtype=bool)
+    # which sets are still available
+    available = np.ones(m, dtype=bool)
+    selected = []
+
+    while uncovered.any():
+        # For each set j: how many of the still-uncovered elements it would cover?
+        # Z[uncovered] is an array of shape (#uncovered_elements, m)
+        cover_counts = Z[uncovered].sum(axis=0)  # shape (m,)
+        # zero out the ones we've already taken
+        cover_counts = np.where(available, cover_counts, 0)
+
+        # fast-path: if the best we can do is cover exactly one element per set,
+        # grab them all at once and be done
+        if cover_counts.max() == Z.shape[0] // Z.shape[1]:
+            singletons = np.where((available) & (cover_counts == 1))[0]
+            selected.extend(singletons.tolist())
+            break
+
+        # otherwise pick the set with max (covered_new_elems / weight)
+        nonzero = cover_counts > 0
+        if not nonzero.any():
+            # nothing left can cover any new element
+            break
+
+        ratios = np.zeros(m, dtype=float)
+        ratios[nonzero] = cover_counts[nonzero] / w[nonzero]
+        best = int(ratios.argmax())
+        selected.append(best)
+
+        # mark its covered elements as now covered
+        # Z[:, best] is the column for set "best"
+        uncovered &= ~Z[:, best].astype(bool)
+        # and remove that set from future consideration
+        available[best] = False
+    return selected
+
+
+
 def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambdaMin = 0.05, timeLimit = 600, output = 0, greedy =False) :
     """
-    Args:
-    :param num_marker: number of markers to select
-    :param corr_mat: gene-gene correlation matrix
-    :param interval: allowed deviation from num_marker
-    :param w: an array of weights for the genes (the higher the weight, the higher cost to select the gene)
-    :param lambdaMax: maximum threshold for gene-gene correlation
-    :param lambdaMin: minimum threshold for gene-gene correlation
-    :param timeLimit: time limit for the optimization
-    :param ouput: whether to print the optimization process. (Set to 1 to print)
-    :param greedy: whether to use the greedy algorithm for set cover, which will not rely on the Gurobi solver
-    Returns:
-    :return: the list of indices of the selected markers
+    Selects marker genes based on gene-gene correlation using combinatorial optimization or a greedy heuristic.
 
+    Args:
+        num_marker (int): Desired number of markers to select.
+        corr_mat (np.ndarray): Gene-gene correlation matrix.
+        interval (int): Allowed deviation from `num_marker`. The final number of markers may vary within this range.
+        w (np.ndarray): An array of weights for the genes. Higher weights indicate higher cost for selection.
+        lambdaMax (float): Maximum threshold for acceptable gene-gene correlation.
+        lambdaMin (float): Minimum threshold for acceptable gene-gene correlation.
+        timeLimit (float): Time limit (in seconds) for the optimization.
+        ouput (int): Whether to print the optimization process. Set to 1 to enable.
+        greedy (bool): Whether to use a greedy algorithm for set cover instead of the Gurobi solver. Default: False.
+
+    Returns:
+        List[int]: Indices of the selected marker genes.
     """
+
     epsilon = (lambdaMax + lambdaMin)/2
     best_marker_length_gap = 1e6
     selection = np.arange(corr_mat.shape[1])
@@ -223,18 +269,20 @@ def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambd
 def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, lambdaMin = .05,lambdaMax = .3, timeLimit = 600, output = 0, greedy = False):
     
     """
+    Performs iterative marker gene selection using the GeneCover algorithm.
+
     Args:
-    :param corr_mat: gene-gene correlation matrix
-    :param incremental_sizes: a tuple of number of markers to select at each iteration
-    :param w: an array of weights for each gene (the higher the weight, the higher cost to select the gene)
-    :param lambdaMax: maximum threshold for gene-gene correlation
-    :param lambdaMin: minimum threshold for gene-gene correlation
-    :param timeLimit: time limit for the optimization
-    :param output: wheth er to print the optimization process. (Set to 1 to print)
-    :param greedy: whether to use the greedy algorithm for set cover, which will not rely on the Gurobi solver
+        corr_mat (np.ndarray): Gene-gene correlation matrix of shape (d, d).
+        incremental_sizes (List[int]): A list indicating the number of markers to select at each iteration.
+        w (np.ndarray): An array of weights for each gene. Higher weights indicate higher cost for selection.
+        lambdaMax (float): Maximum threshold for gene-gene correlation.
+        lambdaMin (float): Minimum threshold for gene-gene correlation.
+        timeLimit (float): Time limit (in seconds) for the optimization.
+        output (int): Whether to print the optimization process. Set to 1 to enable.
+        greedy (bool): Whether to use the greedy set cover algorithm instead of the Gurobi solver. Default: False.
 
     Returns:
-    :return: a list of lists of indices of the selected markers at each iteration
+        List[List[int]]: A list where each element is a list of indices of the selected marker genes at the corresponding iteration.
     """
     num_batches = corr_mat.shape[0] // corr_mat.shape[1]
     num_genes = corr_mat.shape[1]
@@ -252,30 +300,3 @@ def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, lambdaMin = .05,lam
         MARKERS.append(remaining_genes_idx_abs[markers])
         remaining_genes_idx_abs = np.setdiff1d(remaining_genes_idx_abs, [j for i in MARKERS for j in i])  
     return MARKERS
-
-
-def gene_gene_correlation(X, method = 'spearman'):
-    """
-    Args:
-    :param X: an numpy array of size N x d, where N is the number of cells / spots and d is the number of genes; 
-    X can also be a list of numpy arrays where each array in the list is the gene expression matrix from a batch / sample (the number of genes should be the same across all batches / samples)  
-    
-
-    Returns:
-    :return: gene-gene correlation matrix of dimension d x d
-    """
-    if type(X) ==list:
-        corr_mat_list = []
-        for x in X:
-            if method == 'spearman':
-                corr_mat, _ = spearmanr(x)
-            if method == 'pearson':
-                corr_mat = np.corrcoef(x.T)
-            corr_mat_list.append(corr_mat)  
-        corr_mat = np.vstack(corr_mat_list)
-    else :
-        if method == 'spearman':
-            corr_mat, _ = spearmanr(X)
-        if method == 'pearson':
-            corr_mat = np.corrcoef(X.T)
-    return corr_mat

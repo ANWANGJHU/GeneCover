@@ -37,5 +37,3 @@ markers = GeneCover(num_marker = 100, corr_mat = corr_mat, w = w, m = 3, lambdaM
 # Obtain 300 GeneCover markers through iterative selection with three iterations
 iterative_markers = Iterative_GeneCover(incremental_sizes = [100, 100, 100], corr_mat = corr_mat, w = w, m = 3, lambdaMax = .3, lambdaMin = 0.05)
 ```
-
-
