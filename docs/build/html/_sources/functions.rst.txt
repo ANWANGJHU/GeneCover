@@ -1,8 +1,8 @@
 .. _functions:
 
 GeneCover Functions Reference
-==================
-----------------------------------
+=====================================
+
 
 .. automodule:: genecover.geneCover
    :members:

@@ -19,14 +19,15 @@ author = 'An Wang'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'sphinx.ext.mathjax',
+    'nbsphinx',
 ]
 
 templates_path = ['_templates']
 exclude_patterns = []
 
-
-
+source_suffix = [".rst", ".md"]
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 

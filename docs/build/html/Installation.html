@@ -16,6 +16,9 @@
       <script src="_static/documentation_options.js?v=5929fcd5"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -49,6 +52,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="basic-usage.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="functions.html">GeneCover Functions Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cite-our-work.html">Cite GeneCover</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
@@ -101,7 +105,7 @@ To install Gurobi for Python, follow the official instructions here:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://support.gurobi.com/hc/en-us/articles/12684663118993-How-do-I-obtain-a-Gurobi-license">How to obtain a Gurobi license</a></p></li>
 </ul>
-<p>If you are unable to obtain a Gurobi license, GeneCover provides a <strong>greedy heuristic</strong> fallback, which solves the set cover problem approximately.</p>
+<p>If you are unable to obtain a Gurobi license, GeneCover provides a <strong>greedy heuristic</strong> fallback, which solves the set cover problem approximately. The greedy algorithm returns a set cover of weight at most <span class="math notranslate nohighlight">\(\sum_{i=1}^s \frac{1}{i}\)</span> times the optimal weight, where <cite>s</cite> is largest set size.</p>
 <p>To use this option, pass the <cite>greedy=True</cite> flag when calling the algorithm.
 This option <strong>only requires NumPy</strong> and runs without Gurobi.</p>
 <p>Source Code: <a class="reference external" href="https://github.com/ANWANGJHU/GeneCover">https://github.com/ANWANGJHU/GeneCover</a></p>

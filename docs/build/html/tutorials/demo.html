@@ -1,0 +1,673 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marker Gene Selection from DLPFC Sample #151673 &mdash; GeneCover Documentation  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="GeneCover Functions Reference" href="../functions.html" />
+    <link rel="prev" title="Tutorials" href="../tutorials.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GeneCover Documentation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basic-usage.html">Basic Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Marker Gene Selection from DLPFC Sample #151673</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Load-Dataset">Load Dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Computing-Correlation-Matrix">Computing Correlation Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)">GeneCover via Combinatorial Optimization (Gurobi Solver)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#GeneCover-via-Greedy-Heuristics-(Don't-Need-Gurobi)">GeneCover via Greedy Heuristics (Don’t Need Gurobi)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Combinatorial-Optimization">Iterative GeneCover via Combinatorial Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Greedy-Heuristics">Iterative GeneCover via Greedy Heuristics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Marker-Gene-Selection-Across-Samples">Marker Gene Selection Across Samples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Load-the-datasets-(Sample-#1515067,-#151669,-#151673)">Load the datasets (Sample #1515067, #151669, #151673)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Compute-Correlation-Matrices-for-Every-Sample">Compute Correlation Matrices for Every Sample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples">GeneCover Marker Selection via Combinatorial Optimization Across Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#GeneCover-Marker-Selection-via-Greedy-Heuristics-Across-Samples">GeneCover Marker Selection via Greedy Heuristics Across Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples">Iterative GeneCover via Combinatorial Optimization Across Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Greedy-Heuristics-Across-Samples">Iterative GeneCover via Greedy Heuristics Across Samples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../functions.html">GeneCover Functions Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite-our-work.html">Cite GeneCover</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GeneCover Documentation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Marker Gene Selection from DLPFC Sample #151673</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/demo.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">genecover</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scanpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</pre></div>
+</div>
+</div>
+<section id="Marker-Gene-Selection-from-DLPFC-Sample-#151673">
+<h1>Marker Gene Selection from DLPFC Sample #151673<a class="headerlink" href="#Marker-Gene-Selection-from-DLPFC-Sample-#151673" title="Link to this heading"></a></h1>
+<section id="Load-Dataset">
+<h2>Load Dataset<a class="headerlink" href="#Load-Dataset" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_dir</span> <span class="o">=</span> <span class="s2">&quot;..</span><span class="se">\\</span><span class="s2">data</span><span class="se">\\</span><span class="s2">DLPFC&quot;</span>
+<span class="n">file_folder</span> <span class="o">=</span> <span class="s2">&quot;151673&quot;</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">file_folder</span><span class="p">)</span>
+<span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_visium</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">count_file</span> <span class="o">=</span> <span class="s2">&quot;filtered_feature_bc_matrix.h5&quot;</span><span class="p">,</span><span class="n">load_images</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">var_names_make_unique</span><span class="p">()</span>
+<span class="n">df_meta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;metadata.tsv&quot;</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">df_meta_layer</span> <span class="o">=</span> <span class="n">df_meta</span><span class="p">[</span><span class="s1">&#39;layer_guess&#39;</span><span class="p">]</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;ground_truth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_meta_layer</span><span class="o">.</span><span class="n">values</span>
+<span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="o">~</span><span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;ground_truth&#39;</span><span class="p">])]</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">normalize_total</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">target_sum</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+<span class="n">orig_gene</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+C:\Users\An Wang\AppData\Local\Temp\ipykernel_42596\1400016560.py:4: FutureWarning: Use `squidpy.read.visium` instead.
+  adata = sc.read_visium(path,count_file = &#34;filtered_feature_bc_matrix.h5&#34;,load_images=True)
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\scanpy\preprocessing\_simple.py:287: ImplicitModificationWarning: Trying to modify attribute `.var` of view, initializing view as actual.
+  adata.var[&#34;n_cells&#34;] = number
+</pre></div></div>
+</div>
+</section>
+<section id="Computing-Correlation-Matrix">
+<h2>Computing Correlation Matrix<a class="headerlink" href="#Computing-Correlation-Matrix" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corr_mat</span> <span class="o">=</span> <span class="n">gene_gene_correlation</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)">
+<h2>GeneCover via Combinatorial Optimization (Gurobi Solver)<a class="headerlink" href="#GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 100 marker genes</span>
+<span class="n">genecover_markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Set parameter Username
+Academic license - for non-commercial use only - expires 2026-04-07
+Best Gap:  0
+Best Epsilon:  0.1311767578125
+GeneCover markers:
+ [&#39;MARCKSL1&#39; &#39;SYNC&#39; &#39;ATP1A1&#39; &#39;ATP1B1&#39; &#39;NME7&#39; &#39;CNTN2&#39; &#39;HPCAL1&#39; &#39;VSNL1&#39;
+ &#39;MDH1&#39; &#39;PPP3R1&#39; &#39;CTNNA2&#39; &#39;TMSB10&#39; &#39;IGKC&#39; &#39;MAL&#39; &#39;ERMN&#39; &#39;LRP2&#39; &#39;GAD1&#39;
+ &#39;CHN1&#39; &#39;MOBP&#39; &#39;CCK&#39; &#39;AC106707.1&#39; &#39;CLDN11&#39; &#39;FAM131A&#39; &#39;LDB2&#39; &#39;UCHL1&#39; &#39;SPP1&#39;
+ &#39;BBS7&#39; &#39;HHIP&#39; &#39;TMEM144&#39; &#39;GPM6A&#39; &#39;SLC1A3&#39; &#39;ENC1&#39; &#39;EDIL3&#39; &#39;CXCL14&#39; &#39;GABRB2&#39;
+ &#39;MOG&#39; &#39;ACTB&#39; &#39;NDUFA4&#39; &#39;RAPGEF5&#39; &#39;AQP1&#39; &#39;PHKG1&#39; &#39;YWHAG&#39; &#39;SLC26A4-AS1&#39;
+ &#39;GJB1&#39; &#39;NAP1L2&#39; &#39;NEFM&#39; &#39;NEFL&#39; &#39;STMN2&#39; &#39;CALB1&#39; &#39;ENPP2&#39; &#39;DIRAS2&#39; &#39;CERCAM&#39;
+ &#39;OLFM1&#39; &#39;PTGDS&#39; &#39;SAA1&#39; &#39;FOLH1&#39; &#39;MYRF&#39; &#39;SCGB2A2&#39; &#39;CARNS1&#39; &#39;NRGN&#39; &#39;NKX6-2&#39;
+ &#39;NELL2&#39; &#39;KRT8&#39; &#39;KCNC2&#39; &#39;SYT1&#39; &#39;CUX2&#39; &#39;CABP1&#39; &#39;AACS&#39; &#39;RTN1&#39; &#39;HSPA2&#39;
+ &#39;PPP4R4&#39; &#39;GLDN&#39; &#39;HBA2&#39; &#39;SLC5A11&#39; &#39;AC009133.1&#39; &#39;PLLP&#39; &#39;NDRG4&#39; &#39;CALB2&#39;
+ &#39;KRT19&#39; &#39;CNP&#39; &#39;GFAP&#39; &#39;NSF&#39; &#39;ANKRD40&#39; &#39;AATK&#39; &#39;MBP&#39; &#39;CHGB&#39; &#39;SNAP25&#39; &#39;CST3&#39;
+ &#39;BCAS1&#39; &#39;NDUFA7&#39; &#39;PPP1R14A&#39; &#39;CALM3&#39; &#39;RSPH14&#39; &#39;NEFH&#39; &#39;YWHAH&#39; &#39;C21orf91&#39;
+ &#39;OLIG1&#39; &#39;PCP4&#39; &#39;MT-CO1&#39; &#39;MT-CO2&#39;]
+</pre></div></div>
+</div>
+</section>
+<section id="GeneCover-via-Greedy-Heuristics-(Don't-Need-Gurobi)">
+<h2>GeneCover via Greedy Heuristics (Don’t Need Gurobi)<a class="headerlink" href="#GeneCover-via-Greedy-Heuristics-(Don't-Need-Gurobi)" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#obtain 100 marker genes via greedy heuristics</span>
+<span class="n">genecover_markers_greedy</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers_greedy</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Best Gap:  0
+Best Epsilon:  0.136181640625
+GeneCover markers:
+ [&#39;SNAP25&#39; &#39;ERMN&#39; &#39;ENC1&#39; &#39;VSNL1&#39; &#39;MAG&#39; &#39;SCGB2A2&#39; &#39;ATP1B1&#39; &#39;RTN1&#39; &#39;PTGDS&#39;
+ &#39;OLFM1&#39; &#39;MOG&#39; &#39;MBP&#39; &#39;FABP4&#39; &#39;IGKC&#39; &#39;CST3&#39; &#39;CARNS1&#39; &#39;GAD1&#39; &#39;TMEM144&#39;
+ &#39;KRT19&#39; &#39;MT-CO1&#39; &#39;NME7&#39; &#39;UCHL1&#39; &#39;PPP1R14A&#39; &#39;CHN1&#39; &#39;CLDN11&#39; &#39;HBB&#39; &#39;HSPA2&#39;
+ &#39;CALB2&#39; &#39;EDIL3&#39; &#39;YWHAG&#39; &#39;GJB1&#39; &#39;NEFL&#39; &#39;ENPP2&#39; &#39;KRT8&#39; &#39;RNASE1&#39; &#39;SLC5A11&#39;
+ &#39;GFAP&#39; &#39;YWHAH&#39; &#39;SYNC&#39; &#39;RPL5&#39; &#39;ATP1A1&#39; &#39;HPCAL1&#39; &#39;FAM84A&#39; &#39;PPP3R1&#39; &#39;TMSB10&#39;
+ &#39;MOBP&#39; &#39;LDB2&#39; &#39;LIMCH1&#39; &#39;SPP1&#39; &#39;HHIP&#39; &#39;SV2C&#39; &#39;SLC12A2&#39; &#39;CXCL14&#39; &#39;TUBB2A&#39;
+ &#39;ACTB&#39; &#39;RAPGEF5&#39; &#39;AQP1&#39; &#39;PHKG1&#39; &#39;SEMA3E&#39; &#39;CHRDL1&#39; &#39;LAMP2&#39; &#39;NEFM&#39; &#39;CALB1&#39;
+ &#39;DIRAS2&#39; &#39;SLC44A1&#39; &#39;STXBP1&#39; &#39;CERCAM&#39; &#39;ABCA2&#39; &#39;FOLH1&#39; &#39;FTH1&#39; &#39;THY1&#39;
+ &#39;HSPA8&#39; &#39;NRGN&#39; &#39;NKX6-2&#39; &#39;VAMP1&#39; &#39;SYT1&#39; &#39;CABP1&#39; &#39;AACS&#39; &#39;HTR2A&#39; &#39;SLAIN1&#39;
+ &#39;HS6ST3&#39; &#39;GLDN&#39; &#39;IQCK&#39; &#39;GPRC5B&#39; &#39;AC009133.1&#39; &#39;PLLP&#39; &#39;NDRG4&#39; &#39;RPL26&#39;
+ &#39;LRRC75A&#39; &#39;KRT17&#39; &#39;NSF&#39; &#39;ANKRD40&#39; &#39;SEPT4&#39; &#39;AATK&#39; &#39;CHGB&#39; &#39;LAMP5&#39; &#39;NEFH&#39;
+ &#39;OLIG1&#39; &#39;S100B&#39; &#39;MT-CO3&#39;]
+</pre></div></div>
+</div>
+</section>
+<section id="Iterative-GeneCover-via-Combinatorial-Optimization">
+<h2>Iterative GeneCover via Combinatorial Optimization<a class="headerlink" href="#Iterative-GeneCover-via-Combinatorial-Optimization" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover with an incremental size of 100 and two iterations</span>
+<span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iteration 1
+Best Gap:  0
+Best Epsilon:  0.1311767578125
+Iteration  2
+Best Gap:  0
+Best Epsilon:  0.1367919921875
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers_iterative</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iterative GeneCover markers:
+ [[&#39;MARCKSL1&#39; &#39;SYNC&#39; &#39;ATP1A1&#39; &#39;ATP1B1&#39; &#39;NME7&#39; &#39;CNTN2&#39; &#39;HPCAL1&#39; &#39;VSNL1&#39;
+  &#39;MDH1&#39; &#39;PPP3R1&#39; &#39;CTNNA2&#39; &#39;TMSB10&#39; &#39;IGKC&#39; &#39;MAL&#39; &#39;ERMN&#39; &#39;LRP2&#39; &#39;GAD1&#39;
+  &#39;CHN1&#39; &#39;MOBP&#39; &#39;CCK&#39; &#39;AC106707.1&#39; &#39;CLDN11&#39; &#39;FAM131A&#39; &#39;LDB2&#39; &#39;UCHL1&#39;
+  &#39;SPP1&#39; &#39;BBS7&#39; &#39;HHIP&#39; &#39;TMEM144&#39; &#39;GPM6A&#39; &#39;SLC1A3&#39; &#39;ENC1&#39; &#39;EDIL3&#39; &#39;CXCL14&#39;
+  &#39;GABRB2&#39; &#39;MOG&#39; &#39;ACTB&#39; &#39;NDUFA4&#39; &#39;RAPGEF5&#39; &#39;AQP1&#39; &#39;PHKG1&#39; &#39;YWHAG&#39;
+  &#39;SLC26A4-AS1&#39; &#39;GJB1&#39; &#39;NAP1L2&#39; &#39;NEFM&#39; &#39;NEFL&#39; &#39;STMN2&#39; &#39;CALB1&#39; &#39;ENPP2&#39;
+  &#39;DIRAS2&#39; &#39;CERCAM&#39; &#39;OLFM1&#39; &#39;PTGDS&#39; &#39;SAA1&#39; &#39;FOLH1&#39; &#39;MYRF&#39; &#39;SCGB2A2&#39;
+  &#39;CARNS1&#39; &#39;NRGN&#39; &#39;NKX6-2&#39; &#39;NELL2&#39; &#39;KRT8&#39; &#39;KCNC2&#39; &#39;SYT1&#39; &#39;CUX2&#39; &#39;CABP1&#39;
+  &#39;AACS&#39; &#39;RTN1&#39; &#39;HSPA2&#39; &#39;PPP4R4&#39; &#39;GLDN&#39; &#39;HBA2&#39; &#39;SLC5A11&#39; &#39;AC009133.1&#39;
+  &#39;PLLP&#39; &#39;NDRG4&#39; &#39;CALB2&#39; &#39;KRT19&#39; &#39;CNP&#39; &#39;GFAP&#39; &#39;NSF&#39; &#39;ANKRD40&#39; &#39;AATK&#39;
+  &#39;MBP&#39; &#39;CHGB&#39; &#39;SNAP25&#39; &#39;CST3&#39; &#39;BCAS1&#39; &#39;NDUFA7&#39; &#39;PPP1R14A&#39; &#39;CALM3&#39;
+  &#39;RSPH14&#39; &#39;NEFH&#39; &#39;YWHAH&#39; &#39;C21orf91&#39; &#39;OLIG1&#39; &#39;PCP4&#39; &#39;MT-CO1&#39; &#39;MT-CO2&#39;]
+ [&#39;CLSTN1&#39; &#39;HPCA&#39; &#39;LMO4&#39; &#39;KCNA2&#39; &#39;MEF2D&#39; &#39;CADM3&#39; &#39;RGS4&#39; &#39;FAM84A&#39;
+  &#39;SLC30A3&#39; &#39;R3HDM1&#39; &#39;ATP5MC3&#39; &#39;EPHA4&#39; &#39;ATP2B2&#39; &#39;SYN2&#39; &#39;CLDND1&#39; &#39;TAGLN3&#39;
+  &#39;TF&#39; &#39;RAB6B&#39; &#39;SERPINI1&#39; &#39;PCDH7&#39; &#39;HOPX&#39; &#39;MAPK10&#39; &#39;PPP3CA&#39; &#39;UGT8&#39; &#39;BASP1&#39;
+  &#39;SELENOP&#39; &#39;CARTPT&#39; &#39;MAP1B&#39; &#39;NREP&#39; &#39;ANXA6&#39; &#39;GABRA1&#39; &#39;SNCB&#39; &#39;TUBB2A&#39;
+  &#39;NRN1&#39; &#39;CAP2&#39; &#39;TSPYL1&#39; &#39;DGKB&#39; &#39;AC018647.1&#39; &#39;VSTM2A&#39; &#39;TSPAN7&#39; &#39;BEX1&#39;
+  &#39;PLP1&#39; &#39;FABP4&#39; &#39;PDP1&#39; &#39;GABBR2&#39; &#39;SLC44A1&#39; &#39;STXBP1&#39; &#39;AL359091.1&#39; &#39;ABCA2&#39;
+  &#39;SLC1A2&#39; &#39;FTH1&#39; &#39;SCGB1D2&#39; &#39;RTN3&#39; &#39;C11orf87&#39; &#39;CRYAB&#39; &#39;THY1&#39; &#39;HSPA8&#39;
+  &#39;HEPACAM&#39; &#39;SNCG&#39; &#39;LIPA&#39; &#39;LHPP&#39; &#39;VAMP1&#39; &#39;TUBA1B&#39; &#39;TUBA1A&#39; &#39;ATP5F1B&#39;
+  &#39;FAM19A2&#39; &#39;ATP2B1&#39; &#39;HTR2A&#39; &#39;PCDH8&#39; &#39;HS6ST3&#39; &#39;RNASE1&#39; &#39;CALM1&#39; &#39;ITPKA&#39;
+  &#39;B2M&#39; &#39;NPTN&#39; &#39;CRYM&#39; &#39;CACNG3&#39; &#39;MT3&#39; &#39;FA2H&#39; &#39;CAMKK1&#39; &#39;LRRC75A&#39; &#39;KRT17&#39;
+  &#39;SEPT4&#39; &#39;AQP4&#39; &#39;CNDP1&#39; &#39;FKBP1A&#39; &#39;LAMP5&#39; &#39;VSTM2L&#39; &#39;SLC12A5&#39; &#39;CBLN4&#39;
+  &#39;EEF1A2&#39; &#39;AC005944.1&#39; &#39;AC092069.1&#39; &#39;HAPLN4&#39; &#39;SCN1B&#39; &#39;MAG&#39; &#39;SLC17A7&#39;
+  &#39;IGLC2&#39; &#39;SULT4A1&#39; &#39;MT-CO3&#39;]]
+</pre></div></div>
+</div>
+</section>
+<section id="Iterative-GeneCover-via-Greedy-Heuristics">
+<h2>Iterative GeneCover via Greedy Heuristics<a class="headerlink" href="#Iterative-GeneCover-via-Greedy-Heuristics" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover (Greedy Heuristics) with an incremental size of 100 and two iterations</span>
+<span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iteration 1
+Best Gap:  0
+Best Epsilon:  0.136181640625
+Iteration  2
+Best Gap:  0
+Best Epsilon:  0.14765625
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers_iterative</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iterative GeneCover markers:
+ [[&#39;SNAP25&#39; &#39;ERMN&#39; &#39;ENC1&#39; &#39;VSNL1&#39; &#39;MAG&#39; &#39;SCGB2A2&#39; &#39;ATP1B1&#39; &#39;RTN1&#39; &#39;PTGDS&#39;
+  &#39;OLFM1&#39; &#39;MOG&#39; &#39;MBP&#39; &#39;FABP4&#39; &#39;IGKC&#39; &#39;CST3&#39; &#39;CARNS1&#39; &#39;GAD1&#39; &#39;TMEM144&#39;
+  &#39;KRT19&#39; &#39;MT-CO1&#39; &#39;NME7&#39; &#39;UCHL1&#39; &#39;PPP1R14A&#39; &#39;CHN1&#39; &#39;CLDN11&#39; &#39;HBB&#39;
+  &#39;HSPA2&#39; &#39;CALB2&#39; &#39;EDIL3&#39; &#39;YWHAG&#39; &#39;GJB1&#39; &#39;NEFL&#39; &#39;ENPP2&#39; &#39;KRT8&#39; &#39;RNASE1&#39;
+  &#39;SLC5A11&#39; &#39;GFAP&#39; &#39;YWHAH&#39; &#39;SYNC&#39; &#39;RPL5&#39; &#39;ATP1A1&#39; &#39;HPCAL1&#39; &#39;FAM84A&#39;
+  &#39;PPP3R1&#39; &#39;TMSB10&#39; &#39;MOBP&#39; &#39;LDB2&#39; &#39;LIMCH1&#39; &#39;SPP1&#39; &#39;HHIP&#39; &#39;SV2C&#39; &#39;SLC12A2&#39;
+  &#39;CXCL14&#39; &#39;TUBB2A&#39; &#39;ACTB&#39; &#39;RAPGEF5&#39; &#39;AQP1&#39; &#39;PHKG1&#39; &#39;SEMA3E&#39; &#39;CHRDL1&#39;
+  &#39;LAMP2&#39; &#39;NEFM&#39; &#39;CALB1&#39; &#39;DIRAS2&#39; &#39;SLC44A1&#39; &#39;STXBP1&#39; &#39;CERCAM&#39; &#39;ABCA2&#39;
+  &#39;FOLH1&#39; &#39;FTH1&#39; &#39;THY1&#39; &#39;HSPA8&#39; &#39;NRGN&#39; &#39;NKX6-2&#39; &#39;VAMP1&#39; &#39;SYT1&#39; &#39;CABP1&#39;
+  &#39;AACS&#39; &#39;HTR2A&#39; &#39;SLAIN1&#39; &#39;HS6ST3&#39; &#39;GLDN&#39; &#39;IQCK&#39; &#39;GPRC5B&#39; &#39;AC009133.1&#39;
+  &#39;PLLP&#39; &#39;NDRG4&#39; &#39;RPL26&#39; &#39;LRRC75A&#39; &#39;KRT17&#39; &#39;NSF&#39; &#39;ANKRD40&#39; &#39;SEPT4&#39; &#39;AATK&#39;
+  &#39;CHGB&#39; &#39;LAMP5&#39; &#39;NEFH&#39; &#39;OLIG1&#39; &#39;S100B&#39; &#39;MT-CO3&#39;]
+ [&#39;TF&#39; &#39;CCK&#39; &#39;STMN2&#39; &#39;NDUFA4&#39; &#39;MDH1&#39; &#39;PLP1&#39; &#39;GPM6A&#39; &#39;TUBA1B&#39; &#39;HOPX&#39;
+  &#39;SCGB1D2&#39; &#39;MAL&#39; &#39;NPTN&#39; &#39;AC005944.1&#39; &#39;MT-ND1&#39; &#39;SAA1&#39; &#39;CNP&#39; &#39;RTN3&#39;
+  &#39;IGLC2&#39; &#39;SNCB&#39; &#39;SLC1A2&#39; &#39;CALM3&#39; &#39;C11orf87&#39; &#39;CRYAB&#39; &#39;CNDP1&#39; &#39;PCP4&#39;
+  &#39;LMO4&#39; &#39;CLDND1&#39; &#39;GABRA1&#39; &#39;TUBA1A&#39; &#39;PLEKHH1&#39; &#39;KLK6&#39; &#39;ELOVL1&#39; &#39;RGS4&#39;
+  &#39;BASP1&#39; &#39;RPL37&#39; &#39;CARTPT&#39; &#39;MAP1B&#39; &#39;GABRB2&#39; &#39;HLA-B&#39; &#39;BEX1&#39; &#39;LINC00844&#39;
+  &#39;KCNC2&#39; &#39;ATP2B1&#39; &#39;MT3&#39; &#39;HPCA&#39; &#39;TMEM125&#39; &#39;SV2A&#39; &#39;CNTN2&#39; &#39;SLC30A3&#39;
+  &#39;CALM2&#39; &#39;R3HDM1&#39; &#39;ATP2B2&#39; &#39;ARPP21&#39; &#39;AC106707.1&#39; &#39;SERPINI1&#39; &#39;JCHAIN&#39;
+  &#39;PARM1&#39; &#39;G3BP2&#39; &#39;PRDM8&#39; &#39;PPP3CA&#39; &#39;UGT8&#39; &#39;CCDC152&#39; &#39;SELENOP&#39; &#39;HCN1&#39;
+  &#39;HSP90AB1&#39; &#39;PRKAR1B&#39; &#39;ANLN&#39; &#39;NACAD&#39; &#39;GPR37&#39; &#39;CLEC2L&#39; &#39;TSPAN7&#39; &#39;SYP&#39;
+  &#39;NAP1L2&#39; &#39;TCEAL6&#39; &#39;PDP1&#39; &#39;GABBR2&#39; &#39;DNM1&#39; &#39;MYRF&#39; &#39;HEPACAM&#39; &#39;FAM107B&#39;
+  &#39;PIP4K2A&#39; &#39;FRMPD2&#39; &#39;HK1&#39; &#39;OPALIN&#39; &#39;GRIN2B&#39; &#39;DCLK1&#39; &#39;PCDH8&#39; &#39;IGHA2&#39;
+  &#39;IGHA1&#39; &#39;ITPKA&#39; &#39;ARPP19&#39; &#39;SV2B&#39; &#39;FA2H&#39; &#39;CA10&#39; &#39;BCAS1&#39; &#39;EEF1A2&#39; &#39;HAPLN4&#39;
+  &#39;FTL&#39; &#39;SLC17A7&#39; &#39;SYNJ1&#39;]]
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Marker-Gene-Selection-Across-Samples">
+<h1>Marker Gene Selection Across Samples<a class="headerlink" href="#Marker-Gene-Selection-Across-Samples" title="Link to this heading"></a></h1>
+<section id="Load-the-datasets-(Sample-#1515067,-#151669,-#151673)">
+<h2>Load the datasets (Sample #1515067, #151669, #151673)<a class="headerlink" href="#Load-the-datasets-(Sample-#1515067,-#151669,-#151673)" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Adata</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">data_dir</span> <span class="o">=</span> <span class="s2">&quot;..</span><span class="se">\\</span><span class="s2">data</span><span class="se">\\</span><span class="s2">DLPFC Full Samples&quot;</span>
+<span class="n">file_names</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+<span class="n">across_samples_file_names</span> <span class="o">=</span> <span class="n">file_names</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">annotation_names</span> <span class="o">=</span> <span class="n">file_names</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+<span class="k">for</span> <span class="n">j</span><span class="p">,</span>  <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">across_samples_file_names</span><span class="p">):</span>
+    <span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_10x_h5</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">file</span><span class="p">))</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">var_names_make_unique</span><span class="p">()</span>
+    <span class="n">layer_annotation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">annotation_names</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">layer_annotation</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">adata</span><span class="o">.</span><span class="n">obs</span> <span class="o">=</span> <span class="n">layer_annotation</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_cells</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">normalize_total</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">target_sum</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_top_genes</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+    <span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[:,</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">highly_variable</span><span class="p">]</span>
+    <span class="n">Adata</span><span class="p">[</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">adata</span>
+
+<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">across_samples_file_names</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">genes_across_samples</span> <span class="o">=</span> <span class="n">Adata</span><span class="p">[</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">var_names</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">genes_across_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">genes_across_samples</span><span class="p">,</span> <span class="n">Adata</span><span class="p">[</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">var_names</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">across_samples_file_names</span><span class="p">:</span>
+    <span class="n">Adata</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Adata</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]][:,</span> <span class="n">genes_across_samples</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+  utils.warn_names_duplicates(&#34;var&#34;)
+</pre></div></div>
+</div>
+</section>
+<section id="Compute-Correlation-Matrices-for-Every-Sample">
+<h2>Compute Correlation Matrices for Every Sample<a class="headerlink" href="#Compute-Correlation-Matrices-for-Every-Sample" title="Link to this heading"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corr_mat_combine_across_samples</span> <span class="o">=</span> <span class="n">gene_gene_correlation</span><span class="p">([</span><span class="n">Adata</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">across_samples_file_names</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples">
+<h2>GeneCover Marker Selection via Combinatorial Optimization Across Samples<a class="headerlink" href="#GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 100 marker genes across samples</span>
+<span class="n">genecover_marker_across_samples</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span> <span class="o">=</span> <span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Best Gap:  0
+Best Epsilon:  0.10332946777343749
+GeneCover markers:
+ [&#39;AC005944.1&#39; &#39;AC009133.1&#39; &#39;AC092069.1&#39; &#39;ACTB&#39; &#39;ALDOA&#39; &#39;AP3B2&#39; &#39;ATP1A1&#39;
+ &#39;ATP1B1&#39; &#39;ATP6V1B2&#39; &#39;B2M&#39; &#39;BASP1&#39; &#39;CARTPT&#39; &#39;CCK&#39; &#39;CHN1&#39; &#39;CLSTN2&#39; &#39;CLSTN3&#39;
+ &#39;CPLX1&#39; &#39;CRYM&#39; &#39;CST3&#39; &#39;DIRAS2&#39; &#39;DYNC1I1&#39; &#39;ENC1&#39; &#39;EPHA4&#39; &#39;FABP4&#39; &#39;G0S2&#39;
+ &#39;GABRA1&#39; &#39;GABRG2&#39; &#39;GAD1&#39; &#39;GAP43&#39; &#39;GFAP&#39; &#39;GPM6A&#39; &#39;HBB&#39; &#39;HOPX&#39; &#39;IGHA1&#39;
+ &#39;IGLC2&#39; &#39;KLK6&#39; &#39;KRT17&#39; &#39;KRT19&#39; &#39;KRT8&#39; &#39;LMO4&#39; &#39;MAGEE1&#39; &#39;MAP1B&#39; &#39;MBP&#39;
+ &#39;MDH1&#39; &#39;MICAL2&#39; &#39;MOAP1&#39; &#39;MOBP&#39; &#39;MT-ND2&#39; &#39;MT3&#39; &#39;NDRG4&#39; &#39;NEFH&#39; &#39;NEFL&#39;
+ &#39;NEFM&#39; &#39;NELL2&#39; &#39;NME7&#39; &#39;NRGN&#39; &#39;NSF&#39; &#39;OAT&#39; &#39;OLFM1&#39; &#39;PAK1&#39; &#39;PDP1&#39; &#39;PHKG1&#39;
+ &#39;PLIN1&#39; &#39;PLP1&#39; &#39;PPP3R1&#39; &#39;RAB3A&#39; &#39;REEP2&#39; &#39;RPLP1&#39; &#39;RTN1&#39; &#39;RTN3&#39; &#39;RTN4&#39;
+ &#39;SCGB2A2&#39; &#39;SCN1A&#39; &#39;SH3BGRL2&#39; &#39;SLC17A7&#39; &#39;SLC1A2&#39; &#39;SLC24A2&#39; &#39;SLC39A10&#39;
+ &#39;SNAP25&#39; &#39;SNCB&#39; &#39;SPP1&#39; &#39;STMN1&#39; &#39;STMN2&#39; &#39;SYNC&#39; &#39;SYNGR1&#39; &#39;SYT1&#39; &#39;SYT4&#39;
+ &#39;TFF1&#39; &#39;TMEM38A&#39; &#39;TMEM59L&#39; &#39;TMSB10&#39; &#39;TUBA1A&#39; &#39;TUBA1B&#39; &#39;TUBB2A&#39; &#39;UCHL1&#39;
+ &#39;VPS35&#39; &#39;VSNL1&#39; &#39;WDR47&#39; &#39;WDR7&#39; &#39;YWHAG&#39;]
+</pre></div></div>
+</div>
+</section>
+<section id="GeneCover-Marker-Selection-via-Greedy-Heuristics-Across-Samples">
+<h2>GeneCover Marker Selection via Greedy Heuristics Across Samples<a class="headerlink" href="#GeneCover-Marker-Selection-via-Greedy-Heuristics-Across-Samples" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 100 marker genes across samples via greedy heuristics</span>
+<span class="n">genecover_marker_across_samples_greedy</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span> <span class="o">=</span> <span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples_greedy</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Best Gap:  0
+Best Epsilon:  0.11860351562499999
+GeneCover markers:
+ [&#39;SNAP25&#39; &#39;PLP1&#39; &#39;ENC1&#39; &#39;SYT1&#39; &#39;SCGB2A2&#39; &#39;NRGN&#39; &#39;VSNL1&#39; &#39;CST3&#39; &#39;ATP1B1&#39;
+ &#39;MOG&#39; &#39;TUBA1B&#39; &#39;RTN1&#39; &#39;SAA1&#39; &#39;TMSB10&#39; &#39;NEFL&#39; &#39;GFAP&#39; &#39;ERMN&#39; &#39;IGKC&#39; &#39;UCHL1&#39;
+ &#39;KRT19&#39; &#39;ACTB&#39; &#39;MBP&#39; &#39;CLDN11&#39; &#39;MAP1B&#39; &#39;OLFM1&#39; &#39;PTGDS&#39; &#39;MT-CO2&#39; &#39;CARNS1&#39;
+ &#39;CHN1&#39; &#39;CLSTN2&#39; &#39;RTN3&#39; &#39;STMN1&#39; &#39;TUBB2A&#39; &#39;HBA1&#39; &#39;NDUFA4&#39; &#39;PPP1R14A&#39;
+ &#39;SLC1A2&#39; &#39;DIRAS2&#39; &#39;AGT&#39; &#39;ALDOA&#39; &#39;ANXA6&#39; &#39;ATP6V1C1&#39; &#39;ATP6V1D&#39; &#39;BASP1&#39;
+ &#39;CDC37&#39; &#39;CLDND1&#39; &#39;CNDP1&#39; &#39;CNTN2&#39; &#39;COL1A2&#39; &#39;COX6C&#39; &#39;CREG2&#39; &#39;CRYAB&#39; &#39;DCLK1&#39;
+ &#39;DYNC1I1&#39; &#39;EFHD2&#39; &#39;EPDR1&#39; &#39;ETS2&#39; &#39;FAM3C&#39; &#39;FKBP1A&#39; &#39;FTL&#39; &#39;GLS&#39; &#39;GPM6A&#39;
+ &#39;HPRT1&#39; &#39;HSPA2&#39; &#39;HSPA8&#39; &#39;HSPH1&#39; &#39;KCNC2&#39; &#39;KIFAP3&#39; &#39;LAMP2&#39; &#39;LDHA&#39;
+ &#39;LINC00844&#39; &#39;LMO4&#39; &#39;MAG&#39; &#39;MAGED1&#39; &#39;MAL&#39; &#39;MAP3K12&#39; &#39;MDH1&#39; &#39;MGP&#39; &#39;MMACHC&#39;
+ &#39;MT-ND2&#39; &#39;NAP1L2&#39; &#39;NAP1L5&#39; &#39;NSF&#39; &#39;OPALIN&#39; &#39;PLIN1&#39; &#39;PNMA8A&#39; &#39;PRKAR1B&#39;
+ &#39;PRKCE&#39; &#39;RAB3A&#39; &#39;RAB6A&#39; &#39;RGS4&#39; &#39;RPS27&#39; &#39;SCG5&#39; &#39;SCGB1D2&#39; &#39;SERPINI1&#39;
+ &#39;SLC1A3&#39; &#39;SNCA&#39; &#39;SNCG&#39; &#39;SYN2&#39; &#39;TFF1&#39;]
+</pre></div></div>
+</div>
+</section>
+<section id="Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples">
+<h2>Iterative GeneCover via Combinatorial Optimization Across Samples<a class="headerlink" href="#Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover with an incremental size of 100 and two iterations</span>
+<span class="n">genecover_marker_across_samples</span> <span class="o">=</span> <span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iteration 1
+Best Gap:  0
+Best Epsilon:  0.10332946777343749
+Iteration  2
+Best Gap:  0
+Best Epsilon:  0.10310058593749999
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iterative GeneCover markers:
+ [[&#39;AC005944.1&#39; &#39;AC009133.1&#39; &#39;AC092069.1&#39; &#39;ACTB&#39; &#39;ALDOA&#39; &#39;AP3B2&#39; &#39;ATP1A1&#39;
+  &#39;ATP1B1&#39; &#39;ATP6V1B2&#39; &#39;B2M&#39; &#39;BASP1&#39; &#39;CARTPT&#39; &#39;CCK&#39; &#39;CHN1&#39; &#39;CLSTN2&#39;
+  &#39;CLSTN3&#39; &#39;CPLX1&#39; &#39;CRYM&#39; &#39;CST3&#39; &#39;DIRAS2&#39; &#39;DYNC1I1&#39; &#39;ENC1&#39; &#39;EPHA4&#39;
+  &#39;FABP4&#39; &#39;G0S2&#39; &#39;GABRA1&#39; &#39;GABRG2&#39; &#39;GAD1&#39; &#39;GAP43&#39; &#39;GFAP&#39; &#39;GPM6A&#39; &#39;HBB&#39;
+  &#39;HOPX&#39; &#39;IGHA1&#39; &#39;IGLC2&#39; &#39;KLK6&#39; &#39;KRT17&#39; &#39;KRT19&#39; &#39;KRT8&#39; &#39;LMO4&#39; &#39;MAGEE1&#39;
+  &#39;MAP1B&#39; &#39;MBP&#39; &#39;MDH1&#39; &#39;MICAL2&#39; &#39;MOAP1&#39; &#39;MOBP&#39; &#39;MT-ND2&#39; &#39;MT3&#39; &#39;NDRG4&#39;
+  &#39;NEFH&#39; &#39;NEFL&#39; &#39;NEFM&#39; &#39;NELL2&#39; &#39;NME7&#39; &#39;NRGN&#39; &#39;NSF&#39; &#39;OAT&#39; &#39;OLFM1&#39; &#39;PAK1&#39;
+  &#39;PDP1&#39; &#39;PHKG1&#39; &#39;PLIN1&#39; &#39;PLP1&#39; &#39;PPP3R1&#39; &#39;RAB3A&#39; &#39;REEP2&#39; &#39;RPLP1&#39; &#39;RTN1&#39;
+  &#39;RTN3&#39; &#39;RTN4&#39; &#39;SCGB2A2&#39; &#39;SCN1A&#39; &#39;SH3BGRL2&#39; &#39;SLC17A7&#39; &#39;SLC1A2&#39; &#39;SLC24A2&#39;
+  &#39;SLC39A10&#39; &#39;SNAP25&#39; &#39;SNCB&#39; &#39;SPP1&#39; &#39;STMN1&#39; &#39;STMN2&#39; &#39;SYNC&#39; &#39;SYNGR1&#39;
+  &#39;SYT1&#39; &#39;SYT4&#39; &#39;TFF1&#39; &#39;TMEM38A&#39; &#39;TMEM59L&#39; &#39;TMSB10&#39; &#39;TUBA1A&#39; &#39;TUBA1B&#39;
+  &#39;TUBB2A&#39; &#39;UCHL1&#39; &#39;VPS35&#39; &#39;VSNL1&#39; &#39;WDR47&#39; &#39;WDR7&#39; &#39;YWHAG&#39;]
+ [&#39;ADD2&#39; &#39;AK5&#39; &#39;ANXA6&#39; &#39;APBA2&#39; &#39;APP&#39; &#39;ATP6AP2&#39; &#39;ATRNL1&#39; &#39;BEX1&#39; &#39;CABP1&#39;
+  &#39;CACNB1&#39; &#39;CALM3&#39; &#39;CAMK2D&#39; &#39;CAMK2N1&#39; &#39;CHGA&#39; &#39;CHGB&#39; &#39;CLDN11&#39; &#39;CLU&#39; &#39;CMAS&#39;
+  &#39;CNP&#39; &#39;CPB1&#39; &#39;CREG2&#39; &#39;CRYAB&#39; &#39;DCLK1&#39; &#39;DNM1&#39; &#39;DNM3&#39; &#39;EEF1A1&#39; &#39;EFHD2&#39;
+  &#39;EIF4A2&#39; &#39;EPDR1&#39; &#39;ERMN&#39; &#39;ETS2&#39; &#39;FBXW7&#39; &#39;G3BP2&#39; &#39;GAPDH&#39; &#39;GLS&#39; &#39;GNB5&#39;
+  &#39;HLA-B&#39; &#39;HSP90AA1&#39; &#39;HSP90AB1&#39; &#39;HSPA8&#39; &#39;HSPH1&#39; &#39;IGKC&#39; &#39;KCNK1&#39; &#39;KIFAP3&#39;
+  &#39;LRRC75A&#39; &#39;MAPRE3&#39; &#39;MFSD4A&#39; &#39;MGP&#39; &#39;MT-ND1&#39; &#39;MUC1&#39; &#39;NAP1L2&#39; &#39;NDFIP1&#39;
+  &#39;NELL1&#39; &#39;NMNAT2&#39; &#39;NPTN&#39; &#39;NREP&#39; &#39;NUAK1&#39; &#39;NUDT4&#39; &#39;OXR1&#39; &#39;PCP4&#39; &#39;PFKP&#39;
+  &#39;PGK1&#39; &#39;PIK3R1&#39; &#39;PRKAR1A&#39; &#39;PRKCE&#39; &#39;PRPF19&#39; &#39;PTGDS&#39; &#39;PTPN5&#39; &#39;RAB2A&#39;
+  &#39;RAB3C&#39; &#39;REEP1&#39; &#39;RGS4&#39; &#39;RPS12&#39; &#39;RTN4RL2&#39; &#39;SAA1&#39; &#39;SCG5&#39; &#39;SCGB1D2&#39;
+  &#39;SCN2A&#39; &#39;SERPINI1&#39; &#39;SH3GL2&#39; &#39;SLC1A3&#39; &#39;SLC6A17&#39; &#39;SNCG&#39; &#39;SNX10&#39; &#39;SPOCK2&#39;
+  &#39;SRPK2&#39; &#39;STXBP1&#39; &#39;SV2A&#39; &#39;SV2B&#39; &#39;SYP&#39; &#39;TAGLN3&#39; &#39;TBR1&#39; &#39;TF&#39; &#39;THY1&#39;
+  &#39;TOLLIP&#39; &#39;TUBA4A&#39; &#39;WASF1&#39; &#39;WASL&#39; &#39;YWHAB&#39; &#39;YWHAH&#39;]]
+</pre></div></div>
+</div>
+</section>
+<section id="Iterative-GeneCover-via-Greedy-Heuristics-Across-Samples">
+<h2>Iterative GeneCover via Greedy Heuristics Across Samples<a class="headerlink" href="#Iterative-GeneCover-via-Greedy-Heuristics-Across-Samples" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover with an incremental size of 100 and two iterations</span>
+<span class="n">genecover_marker_across_samples_greedy</span> <span class="o">=</span> <span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="n">lambdaMin</span> <span class="o">=</span> <span class="mf">.08</span><span class="p">,</span> <span class="n">lambdaMax</span> <span class="o">=</span> <span class="mf">.2</span><span class="p">,</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iteration 1
+Best Gap:  0
+Best Epsilon:  0.1185546875
+Iteration  2
+Best Gap:  0
+Best Epsilon:  0.11213867187500001
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples_greedy</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iterative GeneCover markers:
+ [[&#39;SNAP25&#39; &#39;PLP1&#39; &#39;ENC1&#39; &#39;SYT1&#39; &#39;SCGB2A2&#39; &#39;NRGN&#39; &#39;VSNL1&#39; &#39;CST3&#39; &#39;ATP1B1&#39;
+  &#39;MOG&#39; &#39;TUBA1B&#39; &#39;RTN1&#39; &#39;SAA1&#39; &#39;TMSB10&#39; &#39;NEFL&#39; &#39;GFAP&#39; &#39;ERMN&#39; &#39;IGKC&#39;
+  &#39;UCHL1&#39; &#39;KRT19&#39; &#39;ACTB&#39; &#39;MBP&#39; &#39;CLDN11&#39; &#39;MAP1B&#39; &#39;OLFM1&#39; &#39;PTGDS&#39; &#39;MT-CO2&#39;
+  &#39;CARNS1&#39; &#39;CHN1&#39; &#39;CLSTN2&#39; &#39;RTN3&#39; &#39;STMN1&#39; &#39;TUBB2A&#39; &#39;HBA1&#39; &#39;NDUFA4&#39;
+  &#39;PPP1R14A&#39; &#39;SLC1A2&#39; &#39;DIRAS2&#39; &#39;AGT&#39; &#39;ALDOA&#39; &#39;ANXA6&#39; &#39;ATP6V1C1&#39; &#39;ATP6V1D&#39;
+  &#39;BASP1&#39; &#39;CDC37&#39; &#39;CLDND1&#39; &#39;CNDP1&#39; &#39;CNTN2&#39; &#39;COL1A2&#39; &#39;COX6C&#39; &#39;CREG2&#39;
+  &#39;DCLK1&#39; &#39;DYNC1I1&#39; &#39;EFHD2&#39; &#39;EPDR1&#39; &#39;ETS2&#39; &#39;FAM3C&#39; &#39;FKBP1A&#39; &#39;FTL&#39; &#39;GLS&#39;
+  &#39;GPM6A&#39; &#39;HPRT1&#39; &#39;HSPA2&#39; &#39;HSPA8&#39; &#39;HSPH1&#39; &#39;KCNC2&#39; &#39;KIFAP3&#39; &#39;KRT18&#39;
+  &#39;LAMP2&#39; &#39;LDHA&#39; &#39;LINC00844&#39; &#39;LMO4&#39; &#39;MAG&#39; &#39;MAGED1&#39; &#39;MAL&#39; &#39;MAP3K12&#39; &#39;MDH1&#39;
+  &#39;MGP&#39; &#39;MMACHC&#39; &#39;MT-ND2&#39; &#39;NAP1L2&#39; &#39;NAP1L5&#39; &#39;NSF&#39; &#39;OPALIN&#39; &#39;PLIN1&#39;
+  &#39;PNMA8A&#39; &#39;PRKAR1B&#39; &#39;PRKCE&#39; &#39;RAB3A&#39; &#39;RAB6A&#39; &#39;RGS4&#39; &#39;RPS27&#39; &#39;SCG5&#39;
+  &#39;SCGB1D2&#39; &#39;SERPINI1&#39; &#39;SLC1A3&#39; &#39;SNCA&#39; &#39;SNCG&#39; &#39;SYN2&#39; &#39;TFF1&#39;]
+ [&#39;YWHAH&#39; &#39;TF&#39; &#39;STMN2&#39; &#39;YWHAG&#39; &#39;SLC24A2&#39; &#39;CCK&#39; &#39;MT3&#39; &#39;MUC1&#39; &#39;NEFM&#39; &#39;NME7&#39;
+  &#39;FABP4&#39; &#39;MOBP&#39; &#39;HOPX&#39; &#39;ATP6V1B2&#39; &#39;IGLC2&#39; &#39;PCP4&#39; &#39;SLC17A7&#39; &#39;PFKP&#39; &#39;TBR1&#39;
+  &#39;CAP2&#39; &#39;APP&#39; &#39;GABRA1&#39; &#39;NKX6-2&#39; &#39;SYP&#39; &#39;TAGLN3&#39; &#39;SH3GL2&#39; &#39;GAP43&#39; &#39;CRYM&#39;
+  &#39;AC005944.1&#39; &#39;CNP&#39; &#39;THY1&#39; &#39;MOAP1&#39; &#39;NELL1&#39; &#39;SYT4&#39; &#39;NAPB&#39; &#39;SLC30A3&#39;
+  &#39;OXR1&#39; &#39;SPP1&#39; &#39;STXBP1&#39; &#39;GABRG2&#39; &#39;MICAL2&#39; &#39;NDRG4&#39; &#39;CHL1&#39; &#39;ENPP2&#39; &#39;FABP3&#39;
+  &#39;IGHA1&#39; &#39;ITFG1&#39; &#39;KRT8&#39; &#39;MT-CO1&#39; &#39;PAK1&#39; &#39;SCN2A&#39; &#39;SSTR2&#39; &#39;TUBA4A&#39; &#39;CHGB&#39;
+  &#39;CLU&#39; &#39;FAM49A&#39; &#39;HSP90AA1&#39; &#39;LRRC75A&#39; &#39;NELL2&#39; &#39;NUAK1&#39; &#39;PGM2L1&#39;
+  &#39;AC011603.3&#39; &#39;ACOT13&#39; &#39;ACOT7&#39; &#39;APBA2&#39; &#39;APOE&#39; &#39;ATL1&#39; &#39;ATP1B2&#39; &#39;ATP6V1A&#39;
+  &#39;BNIP3&#39; &#39;CPLX1&#39; &#39;CRYAB&#39; &#39;CTNNB1&#39; &#39;EIF4A2&#39; &#39;ENO2&#39; &#39;GHITM&#39; &#39;GLUL&#39;
+  &#39;IPCEF1&#39; &#39;KIF21A&#39; &#39;KLC1&#39; &#39;MAP2K1&#39; &#39;MLLT11&#39; &#39;MT-ND1&#39; &#39;MT-ND3&#39; &#39;MYRF&#39;
+  &#39;PCLO&#39; &#39;PCSK2&#39; &#39;PEG3&#39; &#39;PIK3R1&#39; &#39;S100A11&#39; &#39;SEPT4&#39; &#39;SLC6A17&#39; &#39;STX1A&#39;
+  &#39;SYNGR1&#39; &#39;SYNGR3&#39; &#39;TMEM144&#39; &#39;TMEM14A&#39; &#39;TOLLIP&#39; &#39;TUBB&#39; &#39;VAMP1&#39;]]
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../functions.html" class="btn btn-neutral float-right" title="GeneCover Functions Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, An Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

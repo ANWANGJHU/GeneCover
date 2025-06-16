@@ -25,7 +25,7 @@ Gurobi requires a valid license. For instructions on obtaining one, see:
 - `How to obtain a Gurobi license <https://support.gurobi.com/hc/en-us/articles/12684663118993-How-do-I-obtain-a-Gurobi-license>`_
 
 
-If you are unable to obtain a Gurobi license, GeneCover provides a **greedy heuristic** fallback, which solves the set cover problem approximately.
+If you are unable to obtain a Gurobi license, GeneCover provides a **greedy heuristic** fallback, which solves the set cover problem approximately. The greedy algorithm returns a set cover of weight at most :math:`\sum_{i=1}^s \frac{1}{i}` times the optimal weight, where `s` is largest set size.
 
 To use this option, pass the `greedy=True` flag when calling the algorithm.  
 This option **only requires NumPy** and runs without Gurobi.

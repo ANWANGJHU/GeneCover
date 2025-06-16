@@ -22,6 +22,7 @@ It uses the minimal weight set cover to select a set of minimally redundant mark
 
    Installation
    basic-usage
+   tutorials
    functions
    cite-our-work
    contact
