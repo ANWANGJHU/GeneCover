@@ -1,4 +1,4 @@
-# GeneCover
+# 🧬GeneCover
 
 GeneCover is a computational tool designed for scRNA-seq and spatial transcriptomics data to select pre-labeling marker genes based on gene-gene correlations.
 
