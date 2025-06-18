@@ -1,7 +1,7 @@
 import gurobipy as grb
 import numpy as np
 from scipy.stats import spearmanr
-
+from pyscipopt import Model, quicksum
 
 def gene_gene_correlation(X, method = 'spearman'):
     """
@@ -137,6 +137,56 @@ def covering(Z, minSize=1, alpha=0.05, weights = 1., output=None, callBack = Non
     return cov
 
 
+def covering_scip(Z, minSize=1, weights=1.0, timeLimit=None, output=1):
+    """
+    Simplified weighted set cover with alpha=0 (every element must be covered).
+    Raises ValueError if any element cannot be covered by any set.
+    """
+    N, d = Z.shape
+
+    # Prepare weight array
+    if isinstance(weights, str) and weights == 'prob':
+        w = 1 - 0.01 * np.mean(Z, axis=0)
+    elif np.isscalar(weights):
+        w = weights * np.ones(d, dtype=float)
+    else:
+        w = np.asarray(weights, dtype=float)
+
+    # Precompute non‐zero columns per row and check coverage feasibility
+    cover_indices = [np.flatnonzero(Z[i]) for i in range(N)]
+    for i, cols in enumerate(cover_indices):
+        if cols.size == 0:
+            raise ValueError(f"Element {i} has no covering sets → problem infeasible")
+
+    # Build SCIP model
+    model = Model("SetCover_simple")
+    if timeLimit is not None:
+        model.setParam("limits/time", timeLimit)
+    if output == 0:
+        model.hideOutput()
+
+    # Variables: x[j]=1 if set j is selected
+    x = [model.addVar(vtype="B", name=f"x_{j}") for j in range(d)]
+
+    # Objective: minimize total weight
+    model.setObjective(quicksum(w[j] * x[j] for j in range(d)), "minimize")
+
+    # Cover each element i with at least minSize selected sets
+    for i, cols in enumerate(cover_indices):
+        model.addCons(
+            quicksum(x[j] for j in cols) >= minSize,
+            name=f"cover_i{i}"
+        )
+
+    # Solve
+    model.optimize()
+
+    # Extract solution
+    selected = [j for j in range(d) if model.getVal(x[j]) > 0.5]
+    return selected
+
+
+
 def greedy_weighted_set_cover(Z, w) :
     """
     Greedy heuristic for the weighted set cover problem.
@@ -191,7 +241,7 @@ def greedy_weighted_set_cover(Z, w) :
 
 
 
-def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambdaMin = 0.05, timeLimit = 600, output = 0, greedy =False) :
+def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambdaMin = 0.05, timeLimit = 600, output = 0, solver = "Gurobi") :
     """
     Selects marker genes based on gene-gene correlation using combinatorial optimization or a greedy heuristic.
 
@@ -204,6 +254,7 @@ def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambd
         lambdaMin (float): Minimum threshold for acceptable gene-gene correlation.
         timeLimit (float): Time limit (in seconds) for the optimization.
         ouput (int): Whether to print the optimization process. Set to 1 to enable.
+        solver (str): The solver to use for the optimization. Options are "Gurobi", "SCIP", and "Greedy".
         greedy (bool): Whether to use a greedy algorithm for set cover instead of the Gurobi solver. Default: False.
 
     Returns:
@@ -214,11 +265,15 @@ def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambd
     best_marker_length_gap = 1e6
     selection = np.arange(corr_mat.shape[1])
     G_v3 = corr_mat > epsilon
-    if not greedy:
+    if solver == "Gurobi":
         cov_sol = covering(G_v3, minSize=1, alpha=0.0, weights=w, timeLimit=timeLimit, output = output)
         cov_sol = selection[np.array(cov_sol.x)[:len(selection)] > 0.5]
-    else:
+    elif solver == "Greedy":
         cov_sol = greedy_weighted_set_cover(G_v3, w)
+    elif solver == "SCIP":
+        cov_sol = covering_scip(G_v3, minSize=1, weights=w, timeLimit=timeLimit, output=output)
+    else:
+        raise ValueError("Invalid solver specified. Choose from 'Gurobi', 'SCIP', or 'Greedy'.")
     markers = []
     num_batches = G_v3.shape[0] // G_v3.shape[1]
     num_genes = G_v3.shape[1]
@@ -240,11 +295,15 @@ def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambd
             lambdaMin = epsilon
         epsilon = (lambdaMin+lambdaMax)/2
         G_v3 = corr_mat > epsilon
-        if not greedy:
+        if solver == "Gurobi":
             cov_sol = covering(G_v3, minSize=1, alpha=0.0, weights=w, timeLimit=timeLimit,output = output)
             cov_sol = selection[np.array(cov_sol.x)[:len(selection)] > 0.5]
-        else:
+        elif solver == "Greedy":
             cov_sol = greedy_weighted_set_cover(G_v3, w)
+        elif solver == "SCIP":
+            cov_sol = covering_scip(G_v3, minSize=1,  weights=w, timeLimit=timeLimit, output=output)
+        else:
+            raise ValueError("Invalid solver specified. Choose from 'Gurobi', 'SCIP', or 'Greedy'.")
         markers = []
         for i in cov_sol:
             if num_batches > 1:
@@ -266,7 +325,7 @@ def GeneCover(num_marker, corr_mat, w, m = 3,interval = 0, lambdaMax = .3, lambd
     print("Best Epsilon: ", best_epsilon)
     return markers
 
-def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, lambdaMin = .05,lambdaMax = .3, timeLimit = 600, output = 0, greedy = False):
+def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, lambdaMin = .05,lambdaMax = .3, timeLimit = 600, output = 0, solver = "Gurobi"):
     
     """
     Performs iterative marker gene selection using the GeneCover algorithm.
@@ -279,8 +338,7 @@ def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, lambdaMin = .05,lam
         lambdaMin (float): Minimum threshold for gene-gene correlation.
         timeLimit (float): Time limit (in seconds) for the optimization.
         output (int): Whether to print the optimization process. Set to 1 to enable.
-        greedy (bool): Whether to use the greedy set cover algorithm instead of the Gurobi solver. Default: False.
-
+        solver (str): The solver to use for the optimization. Options are "Gurobi", "SCIP", and "Greedy".
     Returns:
         List[List[int]]: A list where each element is a list of indices of the selected marker genes at the corresponding iteration.
     """
@@ -288,15 +346,15 @@ def Iterative_GeneCover(incremental_sizes,corr_mat, w,m = 3, lambdaMin = .05,lam
     num_genes = corr_mat.shape[1]
     MARKERS = []
     print("Iteration 1")
-    markers = GeneCover(incremental_sizes[0], corr_mat, w = w, m =m, lambdaMax = lambdaMax, lambdaMin = lambdaMin, timeLimit = timeLimit, output=output, greedy=greedy)
+    markers = GeneCover(incremental_sizes[0],corr_mat,w = w,m =m,lambdaMax=lambdaMax,lambdaMin=lambdaMin,timeLimit=timeLimit,output=output,solver=solver)
     selection = np.arange(corr_mat.shape[1])  
     MARKERS.append(markers)
     remaining_genes_idx_abs = np.setdiff1d(selection, markers)
     for t, size in enumerate(incremental_sizes[1:]): 
         print("Iteration ", t+2)
         remaining_genes_idx_abs_batches = np.array([remaining_genes_idx_abs + j * num_genes for j in range(num_batches)]).flatten()
-        corr_mat_remain = corr_mat[remaining_genes_idx_abs_batches][:,remaining_genes_idx_abs]
-        markers = GeneCover(size, corr_mat_remain, w = w[remaining_genes_idx_abs], m =m, lambdaMin= lambdaMin,lambdaMax=lambdaMax, timeLimit = timeLimit, output=output, greedy=greedy)
+        corr_mat_remain=corr_mat[remaining_genes_idx_abs_batches][:,remaining_genes_idx_abs]
+        markers=GeneCover(size,corr_mat_remain,w=w[remaining_genes_idx_abs],m=m,lambdaMin=lambdaMin,lambdaMax=lambdaMax,timeLimit=timeLimit,output=output,solver=solver)
         MARKERS.append(remaining_genes_idx_abs[markers])
-        remaining_genes_idx_abs = np.setdiff1d(remaining_genes_idx_abs, [j for i in MARKERS for j in i])  
+        remaining_genes_idx_abs = np.setdiff1d(remaining_genes_idx_abs, [j for i in MARKERS for j in i])
     return MARKERS
