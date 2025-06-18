@@ -81,7 +81,7 @@
 <span id="functions"></span><h1>GeneCover Functions Reference<a class="headerlink" href="#genecover-functions-reference" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">GeneCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_marker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greedy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#GeneCover"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">GeneCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_marker</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Gurobi'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#GeneCover"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Selects marker genes based on gene-gene correlation using combinatorial optimization or a greedy heuristic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -94,6 +94,7 @@
 <li><p><strong>lambdaMin</strong> (<em>float</em>) – Minimum threshold for acceptable gene-gene correlation.</p></li>
 <li><p><strong>timeLimit</strong> (<em>float</em>) – Time limit (in seconds) for the optimization.</p></li>
 <li><p><strong>ouput</strong> (<em>int</em>) – Whether to print the optimization process. Set to 1 to enable.</p></li>
+<li><p><strong>solver</strong> (<em>str</em>) – The solver to use for the optimization. Options are “Gurobi”, “SCIP”, and “Greedy”.</p></li>
 <li><p><strong>greedy</strong> (<em>bool</em>) – Whether to use a greedy algorithm for set cover instead of the Gurobi solver. Default: False.</p></li>
 </ul>
 </dd>
@@ -108,7 +109,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">Iterative_GeneCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incremental_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greedy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#Iterative_GeneCover"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<span class="sig-name descname"><span class="pre">Iterative_GeneCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incremental_sizes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">corr_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambdaMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">600</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Gurobi'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#Iterative_GeneCover"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Performs iterative marker gene selection using the GeneCover algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -120,7 +121,7 @@
 <li><p><strong>lambdaMin</strong> (<em>float</em>) – Minimum threshold for gene-gene correlation.</p></li>
 <li><p><strong>timeLimit</strong> (<em>float</em>) – Time limit (in seconds) for the optimization.</p></li>
 <li><p><strong>output</strong> (<em>int</em>) – Whether to print the optimization process. Set to 1 to enable.</p></li>
-<li><p><strong>greedy</strong> (<em>bool</em>) – Whether to use the greedy set cover algorithm instead of the Gurobi solver. Default: False.</p></li>
+<li><p><strong>solver</strong> (<em>str</em>) – The solver to use for the optimization. Options are “Gurobi”, “SCIP”, and “Greedy”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -135,7 +136,7 @@
 <dl class="py function">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">covering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callBack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poolSolutions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poolSearchMode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poolGap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LogToConsole</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restart</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#covering"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Solves a weighted gene selection problem using a Gurobi-based optimization model.</p>
+<dd><p>Solves the minimal weight set covering problem using the Gurobi solver.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -155,6 +156,33 @@
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Indices of the selected genes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">covering_scip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/genecover/geneCover.html#covering_scip"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Solves the minimal weight set covering problem using the SCIP solver.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Z</strong> (<em>np.ndarray</em>) – A binary matrix of shape (N, d), where Z[i, j] == 1 indicates that set j covers element i.</p></li>
+<li><p><strong>minSize</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum number of sets required to cover each element. Defaults to 1.</p></li>
+<li><p><strong>weights</strong> (<em>str</em><em>|</em><em>float</em><em>|</em><em>Sequence</em><em>[</em><em>float</em><em>]</em><em>, </em><em>optional</em>) – Weights for each set.
+- If ‘prob’, uses 1 - 0.01 * mean coverage per column.
+- If scalar, uses the same weight for all sets.
+- Otherwise, an array of length d giving each set’s weight.
+Defaults to 1.0.</p></li>
+<li><p><strong>timeLimit</strong> (<em>float</em><em>, </em><em>optional</em>) – Time limit in seconds for the SCIP solver. Defaults to None (no limit).</p></li>
+<li><p><strong>output</strong> (<em>int</em><em>, </em><em>optional</em>) – 1 to enable solver output, 0 to suppress it. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of selected set indices (column indices of Z).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[int]</p>

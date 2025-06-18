@@ -78,7 +78,7 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">gurobipy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">grb</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">spearmanr</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyscipopt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">quicksum</span>
 
 <div class="viewcode-block" id="gene_gene_correlation">
 <a class="viewcode-back" href="../../functions.html#genecover.geneCover.gene_gene_correlation">[docs]</a>
@@ -118,7 +118,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">covering</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">minSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callBack</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">poolSolutions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">poolSearchMode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">poolGap</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">timeLimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">LogToConsole</span><span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">restart</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Solves a weighted gene selection problem using a Gurobi-based optimization model.</span>
+<span class="sd">    Solves the minimal weight set covering problem using the Gurobi solver.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        Z (np.ndarray): A binary matrix of shape (N, d), where N is the number of samples and d is the number of genes.</span>
@@ -220,6 +220,73 @@
 
 
 
+<div class="viewcode-block" id="covering_scip">
+<a class="viewcode-back" href="../../functions.html#genecover.geneCover.covering_scip">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">covering_scip</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">minSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">timeLimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solves the minimal weight set covering problem using the SCIP solver.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        Z (np.ndarray): A binary matrix of shape (N, d), where Z[i, j] == 1 indicates that set j covers element i.</span>
+<span class="sd">        minSize (int, optional): Minimum number of sets required to cover each element. Defaults to 1.</span>
+<span class="sd">        weights (str|float|Sequence[float], optional): Weights for each set. </span>
+<span class="sd">            - If &#39;prob&#39;, uses 1 - 0.01 * mean coverage per column.  </span>
+<span class="sd">            - If scalar, uses the same weight for all sets.  </span>
+<span class="sd">            - Otherwise, an array of length d giving each set’s weight.  </span>
+<span class="sd">            Defaults to 1.0.</span>
+<span class="sd">        timeLimit (float, optional): Time limit in seconds for the SCIP solver. Defaults to None (no limit).</span>
+<span class="sd">        output (int, optional): 1 to enable solver output, 0 to suppress it. Defaults to 1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[int]: List of selected set indices (column indices of Z).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">N</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># Prepare weight array</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s1">&#39;prob&#39;</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="c1"># Precompute non‐zero columns per row and check coverage feasibility</span>
+    <span class="n">cover_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cols</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cover_indices</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cols</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Element </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> has no covering sets → problem infeasible&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Build SCIP model</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s2">&quot;SetCover_simple&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">timeLimit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setParam</span><span class="p">(</span><span class="s2">&quot;limits/time&quot;</span><span class="p">,</span> <span class="n">timeLimit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">hideOutput</span><span class="p">()</span>
+
+    <span class="c1"># Variables: x[j]=1 if set j is selected</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">addVar</span><span class="p">(</span><span class="n">vtype</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;x_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">)]</span>
+
+    <span class="c1"># Objective: minimize total weight</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">setObjective</span><span class="p">(</span><span class="n">quicksum</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">)),</span> <span class="s2">&quot;minimize&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Cover each element i with at least minSize selected sets</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cols</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cover_indices</span><span class="p">):</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">addCons</span><span class="p">(</span>
+            <span class="n">quicksum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">minSize</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;cover_i</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Solve</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
+
+    <span class="c1"># Extract solution</span>
+    <span class="n">selected</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">getVal</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">selected</span></div>
+
+
+
+
 <div class="viewcode-block" id="greedy_weighted_set_cover">
 <a class="viewcode-back" href="../../functions.html#genecover.geneCover.greedy_weighted_set_cover">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">greedy_weighted_set_cover</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="p">:</span>
@@ -279,7 +346,7 @@
 
 <div class="viewcode-block" id="GeneCover">
 <a class="viewcode-back" href="../../functions.html#genecover.geneCover.GeneCover">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="p">,</span> <span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lambdaMax</span> <span class="o">=</span> <span class="mf">.3</span><span class="p">,</span> <span class="n">lambdaMin</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">timeLimit</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">greedy</span> <span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="p">,</span> <span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">lambdaMax</span> <span class="o">=</span> <span class="mf">.3</span><span class="p">,</span> <span class="n">lambdaMin</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">timeLimit</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">)</span> <span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selects marker genes based on gene-gene correlation using combinatorial optimization or a greedy heuristic.</span>
 
@@ -292,6 +359,7 @@
 <span class="sd">        lambdaMin (float): Minimum threshold for acceptable gene-gene correlation.</span>
 <span class="sd">        timeLimit (float): Time limit (in seconds) for the optimization.</span>
 <span class="sd">        ouput (int): Whether to print the optimization process. Set to 1 to enable.</span>
+<span class="sd">        solver (str): The solver to use for the optimization. Options are &quot;Gurobi&quot;, &quot;SCIP&quot;, and &quot;Greedy&quot;.</span>
 <span class="sd">        greedy (bool): Whether to use a greedy algorithm for set cover instead of the Gurobi solver. Default: False.</span>
 
 <span class="sd">    Returns:</span>
@@ -302,11 +370,15 @@
     <span class="n">best_marker_length_gap</span> <span class="o">=</span> <span class="mf">1e6</span>
     <span class="n">selection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">G_v3</span> <span class="o">=</span> <span class="n">corr_mat</span> <span class="o">&gt;</span> <span class="n">epsilon</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">greedy</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">solver</span> <span class="o">==</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">:</span>
         <span class="n">cov_sol</span> <span class="o">=</span> <span class="n">covering</span><span class="p">(</span><span class="n">G_v3</span><span class="p">,</span> <span class="n">minSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">timeLimit</span><span class="o">=</span><span class="n">timeLimit</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="p">)</span>
         <span class="n">cov_sol</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cov_sol</span><span class="o">.</span><span class="n">x</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">solver</span> <span class="o">==</span> <span class="s2">&quot;Greedy&quot;</span><span class="p">:</span>
         <span class="n">cov_sol</span> <span class="o">=</span> <span class="n">greedy_weighted_set_cover</span><span class="p">(</span><span class="n">G_v3</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">solver</span> <span class="o">==</span> <span class="s2">&quot;SCIP&quot;</span><span class="p">:</span>
+        <span class="n">cov_sol</span> <span class="o">=</span> <span class="n">covering_scip</span><span class="p">(</span><span class="n">G_v3</span><span class="p">,</span> <span class="n">minSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">timeLimit</span><span class="o">=</span><span class="n">timeLimit</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid solver specified. Choose from &#39;Gurobi&#39;, &#39;SCIP&#39;, or &#39;Greedy&#39;.&quot;</span><span class="p">)</span>
     <span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">num_batches</span> <span class="o">=</span> <span class="n">G_v3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="n">G_v3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">num_genes</span> <span class="o">=</span> <span class="n">G_v3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -328,11 +400,15 @@
             <span class="n">lambdaMin</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="n">epsilon</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambdaMin</span><span class="o">+</span><span class="n">lambdaMax</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
         <span class="n">G_v3</span> <span class="o">=</span> <span class="n">corr_mat</span> <span class="o">&gt;</span> <span class="n">epsilon</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">greedy</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">solver</span> <span class="o">==</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">:</span>
             <span class="n">cov_sol</span> <span class="o">=</span> <span class="n">covering</span><span class="p">(</span><span class="n">G_v3</span><span class="p">,</span> <span class="n">minSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">timeLimit</span><span class="o">=</span><span class="n">timeLimit</span><span class="p">,</span><span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="p">)</span>
             <span class="n">cov_sol</span> <span class="o">=</span> <span class="n">selection</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cov_sol</span><span class="o">.</span><span class="n">x</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">)]</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">solver</span> <span class="o">==</span> <span class="s2">&quot;Greedy&quot;</span><span class="p">:</span>
             <span class="n">cov_sol</span> <span class="o">=</span> <span class="n">greedy_weighted_set_cover</span><span class="p">(</span><span class="n">G_v3</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">solver</span> <span class="o">==</span> <span class="s2">&quot;SCIP&quot;</span><span class="p">:</span>
+            <span class="n">cov_sol</span> <span class="o">=</span> <span class="n">covering_scip</span><span class="p">(</span><span class="n">G_v3</span><span class="p">,</span> <span class="n">minSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">timeLimit</span><span class="o">=</span><span class="n">timeLimit</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid solver specified. Choose from &#39;Gurobi&#39;, &#39;SCIP&#39;, or &#39;Greedy&#39;.&quot;</span><span class="p">)</span>
         <span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cov_sol</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">num_batches</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -357,7 +433,7 @@
 
 <div class="viewcode-block" id="Iterative_GeneCover">
 <a class="viewcode-back" href="../../functions.html#genecover.geneCover.Iterative_GeneCover">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="p">,</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span><span class="n">m</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">lambdaMin</span> <span class="o">=</span> <span class="mf">.05</span><span class="p">,</span><span class="n">lambdaMax</span> <span class="o">=</span> <span class="mf">.3</span><span class="p">,</span> <span class="n">timeLimit</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">greedy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="p">,</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span><span class="n">m</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">lambdaMin</span> <span class="o">=</span> <span class="mf">.05</span><span class="p">,</span><span class="n">lambdaMax</span> <span class="o">=</span> <span class="mf">.3</span><span class="p">,</span> <span class="n">timeLimit</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">):</span>
 <span class="w">    </span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs iterative marker gene selection using the GeneCover algorithm.</span>
@@ -370,8 +446,7 @@
 <span class="sd">        lambdaMin (float): Minimum threshold for gene-gene correlation.</span>
 <span class="sd">        timeLimit (float): Time limit (in seconds) for the optimization.</span>
 <span class="sd">        output (int): Whether to print the optimization process. Set to 1 to enable.</span>
-<span class="sd">        greedy (bool): Whether to use the greedy set cover algorithm instead of the Gurobi solver. Default: False.</span>
-
+<span class="sd">        solver (str): The solver to use for the optimization. Options are &quot;Gurobi&quot;, &quot;SCIP&quot;, and &quot;Greedy&quot;.</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        List[List[int]]: A list where each element is a list of indices of the selected marker genes at the corresponding iteration.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -379,17 +454,17 @@
     <span class="n">num_genes</span> <span class="o">=</span> <span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">MARKERS</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iteration 1&quot;</span><span class="p">)</span>
-    <span class="n">markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">lambdaMax</span> <span class="o">=</span> <span class="n">lambdaMax</span><span class="p">,</span> <span class="n">lambdaMin</span> <span class="o">=</span> <span class="n">lambdaMin</span><span class="p">,</span> <span class="n">timeLimit</span> <span class="o">=</span> <span class="n">timeLimit</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">greedy</span><span class="o">=</span><span class="n">greedy</span><span class="p">)</span>
+    <span class="n">markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">corr_mat</span><span class="p">,</span><span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="p">,</span><span class="n">m</span> <span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">lambdaMax</span><span class="o">=</span><span class="n">lambdaMax</span><span class="p">,</span><span class="n">lambdaMin</span><span class="o">=</span><span class="n">lambdaMin</span><span class="p">,</span><span class="n">timeLimit</span><span class="o">=</span><span class="n">timeLimit</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span><span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">)</span>
     <span class="n">selection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  
     <span class="n">MARKERS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
     <span class="n">remaining_genes_idx_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">markers</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span> 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iteration &quot;</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">remaining_genes_idx_abs_batches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">remaining_genes_idx_abs</span> <span class="o">+</span> <span class="n">j</span> <span class="o">*</span> <span class="n">num_genes</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_batches</span><span class="p">)])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-        <span class="n">corr_mat_remain</span> <span class="o">=</span> <span class="n">corr_mat</span><span class="p">[</span><span class="n">remaining_genes_idx_abs_batches</span><span class="p">][:,</span><span class="n">remaining_genes_idx_abs</span><span class="p">]</span>
-        <span class="n">markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">corr_mat_remain</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">remaining_genes_idx_abs</span><span class="p">],</span> <span class="n">m</span> <span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">lambdaMin</span><span class="o">=</span> <span class="n">lambdaMin</span><span class="p">,</span><span class="n">lambdaMax</span><span class="o">=</span><span class="n">lambdaMax</span><span class="p">,</span> <span class="n">timeLimit</span> <span class="o">=</span> <span class="n">timeLimit</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">greedy</span><span class="o">=</span><span class="n">greedy</span><span class="p">)</span>
+        <span class="n">corr_mat_remain</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">[</span><span class="n">remaining_genes_idx_abs_batches</span><span class="p">][:,</span><span class="n">remaining_genes_idx_abs</span><span class="p">]</span>
+        <span class="n">markers</span><span class="o">=</span><span class="n">GeneCover</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="n">corr_mat_remain</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">[</span><span class="n">remaining_genes_idx_abs</span><span class="p">],</span><span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">lambdaMin</span><span class="o">=</span><span class="n">lambdaMin</span><span class="p">,</span><span class="n">lambdaMax</span><span class="o">=</span><span class="n">lambdaMax</span><span class="p">,</span><span class="n">timeLimit</span><span class="o">=</span><span class="n">timeLimit</span><span class="p">,</span><span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span><span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">)</span>
         <span class="n">MARKERS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">remaining_genes_idx_abs</span><span class="p">[</span><span class="n">markers</span><span class="p">])</span>
-        <span class="n">remaining_genes_idx_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">remaining_genes_idx_abs</span><span class="p">,</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">MARKERS</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="p">])</span>  
+        <span class="n">remaining_genes_idx_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">remaining_genes_idx_abs</span><span class="p">,</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">MARKERS</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">MARKERS</span></div>
 
 </pre></div>

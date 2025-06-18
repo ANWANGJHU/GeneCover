@@ -93,7 +93,7 @@
 <blockquote>
 <div><ul class="simple">
 <li><p>Python &gt;= 3.8</p></li>
-<li><p>numpy, scipy, gurobipy</p></li>
+<li><p>numpy, scipy, gurobipy, pyscipopt</p></li>
 </ul>
 </div></blockquote>
 <p>GeneCover uses <strong>Gurobi</strong> for solving the minimal weight set cover problem via integer programming.
@@ -105,9 +105,11 @@ To install Gurobi for Python, follow the official instructions here:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://support.gurobi.com/hc/en-us/articles/12684663118993-How-do-I-obtain-a-Gurobi-license">How to obtain a Gurobi license</a></p></li>
 </ul>
-<p>If you are unable to obtain a Gurobi license, GeneCover provides a <strong>greedy heuristic</strong> fallback, which solves the set cover problem approximately. The greedy algorithm returns a set cover of weight at most <span class="math notranslate nohighlight">\(\sum_{i=1}^s \frac{1}{i}\)</span> times the optimal weight, where <cite>s</cite> is largest set size.</p>
-<p>To use this option, pass the <cite>greedy=True</cite> flag when calling the algorithm.
-This option <strong>only requires NumPy</strong> and runs without Gurobi.</p>
+<p>If you are unable to obtain a Gurobi license, GeneCover provides two alternative options:</p>
+<p><strong>1. PySCIPOpt:</strong>
+GeneCover includes a full integer‐programming implementation based on PySCIPOpt, a free Python interface to the SCIP solver with no licensing requirement. To enable this solver, pass the <cite>solver= “SCIP”</cite> flag when calling the algorithm.</p>
+<p><strong>2. Greedy heuristic:</strong>
+When integer programming fails to converge in reasonable amount of time (a rare occurrence in most use cases), we recommend using the built-in greedy heuristic of minimal weight set covering. It returns a set cover of weight at most <span class="math notranslate nohighlight">\(\sum_{i=1}^s \frac{1}{i}\)</span> times the optimal, where <span class="math notranslate nohighlight">\(s\)</span> is the size of the largest set. To use this option, pass the <cite>solver = “Greedy”</cite> flag when calling the algorithm. This option <strong>only requires NumPy</strong>.</p>
 <p>Source Code: <a class="reference external" href="https://github.com/ANWANGJHU/GeneCover">https://github.com/ANWANGJHU/GeneCover</a></p>
 </section>
 </section>

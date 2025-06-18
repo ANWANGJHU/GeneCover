@@ -36,7 +36,7 @@ def gene_gene_correlation(X, method = 'spearman'):
 def covering(Z, minSize=1, alpha=0.05, weights = 1., output=None, callBack = None,
              poolSolutions=None, poolSearchMode=None, poolGap = None, timeLimit=None, LogToConsole= 1,restart=None):
     """
-    Solves a weighted gene selection problem using a Gurobi-based optimization model.
+    Solves the minimal weight set covering problem using the Gurobi solver.
 
     Args:
         Z (np.ndarray): A binary matrix of shape (N, d), where N is the number of samples and d is the number of genes.
@@ -139,8 +139,22 @@ def covering(Z, minSize=1, alpha=0.05, weights = 1., output=None, callBack = Non
 
 def covering_scip(Z, minSize=1, weights=1.0, timeLimit=None, output=1):
     """
-    Simplified weighted set cover with alpha=0 (every element must be covered).
-    Raises ValueError if any element cannot be covered by any set.
+    Solves the minimal weight set covering problem using the SCIP solver.
+
+    Args:
+        Z (np.ndarray): A binary matrix of shape (N, d), where Z[i, j] == 1 indicates that set j covers element i.
+        minSize (int, optional): Minimum number of sets required to cover each element. Defaults to 1.
+        weights (str|float|Sequence[float], optional): Weights for each set. 
+            - If 'prob', uses 1 - 0.01 * mean coverage per column.  
+            - If scalar, uses the same weight for all sets.  
+            - Otherwise, an array of length d giving each set’s weight.  
+            Defaults to 1.0.
+        timeLimit (float, optional): Time limit in seconds for the SCIP solver. Defaults to None (no limit).
+        output (int, optional): 1 to enable solver output, 0 to suppress it. Defaults to 1.
+
+    Returns:
+        List[int]: List of selected set indices (column indices of Z).
+
     """
     N, d = Z.shape
 

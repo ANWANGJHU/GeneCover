@@ -13,7 +13,7 @@ Required Imports
     from genecover import *
     import numpy as np
 
-Data Format
+Main Inputs
 -----------
 
 - **data**: A NumPy array of shape `(N, d)` storing gene expression measurements,
@@ -28,6 +28,11 @@ Data Format
 
       w = np.ones(data.shape[1])
 
+- **solver:** A string indicating which solver to use for gene selection. Options include:
+    - `"Gurobi"`: the Gurobi solver for integer programming.
+    - `"SCIP"`: the SCIP solver for integer programming.
+    - `"Greedy"`: the greedy heuristic for gene selection.
+
 Gene-Gene Correlation
 ---------------------
 
@@ -40,17 +45,7 @@ Compute the gene-gene correlation matrix:
 Gene Selection (Single Run)
 ---------------------------
 
-Obtain 100 marker genes using the standard GeneCover optimization:
-
-.. code-block:: python
-
-    markers = GeneCover(
-        num_marker=100,
-        corr_mat=corr_mat,
-        w=w)
-
-
-or obtain 100 marker genes using the greedy heuristic approach, which does not require Gurobi:
+Obtain 100 marker genes using the standard Gurobi optimization:
 
 .. code-block:: python
 
@@ -58,7 +53,8 @@ or obtain 100 marker genes using the greedy heuristic approach, which does not r
         num_marker=100,
         corr_mat=corr_mat,
         w=w,
-        greedy=True)
+        solver=solver)
+
 
 Iterative Gene Selection
 ------------------------
@@ -70,14 +66,5 @@ Select 300 markers in three iterative steps (e.g., 100 markers per round):
     iterative_markers = Iterative_GeneCover(
         incremental_sizes=[100, 100, 100],
         corr_mat=corr_mat,
-        w=w)
-
-You can also use the greedy heuristic for iterative selection:
-
-.. code-block:: python
-
-    iterative_markers = Iterative_GeneCover(
-        incremental_sizes=[100, 100, 100],
-        corr_mat=corr_mat,
         w=w,
-        greedy=True)
+        solver=solver)

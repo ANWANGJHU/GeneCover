@@ -55,17 +55,21 @@
 <li class="toctree-l3"><a class="reference internal" href="#Load-Dataset">Load Dataset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Computing-Correlation-Matrix">Computing Correlation Matrix</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)">GeneCover via Combinatorial Optimization (Gurobi Solver)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#GeneCover-via-Greedy-Heuristics-(Don't-Need-Gurobi)">GeneCover via Greedy Heuristics (Don’t Need Gurobi)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Combinatorial-Optimization">Iterative GeneCover via Combinatorial Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#GeneCover-via-Combinaotorial-Optimization-(SCIP-Solver)">GeneCover via Combinaotorial Optimization (SCIP Solver)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#GeneCover-via-Greedy-Heuristics">GeneCover via Greedy Heuristics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)">Iterative GeneCover via Combinatorial Optimization (Gurobi Solver)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Combinatorial-Optimization-(SCIP-Solver)">Iterative GeneCover via Combinatorial Optimization (SCIP Solver)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Greedy-Heuristics">Iterative GeneCover via Greedy Heuristics</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#Marker-Gene-Selection-Across-Samples">Marker Gene Selection Across Samples</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Load-the-datasets-(Sample-#1515067,-#151669,-#151673)">Load the datasets (Sample #1515067, #151669, #151673)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Compute-Correlation-Matrices-for-Every-Sample">Compute Correlation Matrices for Every Sample</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples">GeneCover Marker Selection via Combinatorial Optimization Across Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples-(Gurobi-Solver)">GeneCover Marker Selection via Combinatorial Optimization Across Samples (Gurobi Solver)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples-(SCIP-Solver)">GeneCover Marker Selection via Combinatorial Optimization Across Samples (SCIP Solver)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#GeneCover-Marker-Selection-via-Greedy-Heuristics-Across-Samples">GeneCover Marker Selection via Greedy Heuristics Across Samples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples">Iterative GeneCover via Combinatorial Optimization Across Samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples-(Gurobi-Solver)">Iterative GeneCover via Combinatorial Optimization Across Samples (Gurobi Solver)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples-(SCIP-Solver)">Iterative GeneCover via Combinatorial Optimization Across Samples (SCIP Solver)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Iterative-GeneCover-via-Greedy-Heuristics-Across-Samples">Iterative GeneCover via Greedy Heuristics Across Samples</a></li>
 </ul>
 </li>
@@ -118,7 +122,7 @@
 <section id="Load-Dataset">
 <h2>Load Dataset<a class="headerlink" href="#Load-Dataset" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data_dir</span> <span class="o">=</span> <span class="s2">&quot;..</span><span class="se">\\</span><span class="s2">data</span><span class="se">\\</span><span class="s2">DLPFC&quot;</span>
@@ -142,7 +146,7 @@
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-C:\Users\An Wang\AppData\Local\Temp\ipykernel_42596\1400016560.py:4: FutureWarning: Use `squidpy.read.visium` instead.
+C:\Users\An Wang\AppData\Local\Temp\ipykernel_60420\1400016560.py:4: FutureWarning: Use `squidpy.read.visium` instead.
   adata = sc.read_visium(path,count_file = &#34;filtered_feature_bc_matrix.h5&#34;,load_images=True)
 c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata.py:1758: UserWarning: Variable names are not unique. To make them unique, call `.var_names_make_unique`.
   utils.warn_names_duplicates(&#34;var&#34;)
@@ -156,7 +160,7 @@ c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\scanpy\preprocessing\
 <section id="Computing-Correlation-Matrix">
 <h2>Computing Correlation Matrix<a class="headerlink" href="#Computing-Correlation-Matrix" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corr_mat</span> <span class="o">=</span> <span class="n">gene_gene_correlation</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
@@ -167,11 +171,11 @@ c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\scanpy\preprocessing\
 <section id="GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)">
 <h2>GeneCover via Combinatorial Optimization (Gurobi Solver)<a class="headerlink" href="#GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 100 marker genes</span>
-<span class="n">genecover_markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">genecover_markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -201,14 +205,48 @@ GeneCover markers:
 </pre></div></div>
 </div>
 </section>
-<section id="GeneCover-via-Greedy-Heuristics-(Don't-Need-Gurobi)">
-<h2>GeneCover via Greedy Heuristics (Don’t Need Gurobi)<a class="headerlink" href="#GeneCover-via-Greedy-Heuristics-(Don't-Need-Gurobi)" title="Link to this heading"></a></h2>
+<section id="GeneCover-via-Combinaotorial-Optimization-(SCIP-Solver)">
+<h2>GeneCover via Combinaotorial Optimization (SCIP Solver)<a class="headerlink" href="#GeneCover-via-Combinaotorial-Optimization-(SCIP-Solver)" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">genecover_markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;SCIP&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers via SCIP: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Best Gap:  0
+Best Epsilon:  0.12958984375
+GeneCover markers via SCIP:
+ [&#39;PADI2&#39; &#39;SYNC&#39; &#39;WDR47&#39; &#39;ATP1A1&#39; &#39;ATP1B1&#39; &#39;NME7&#39; &#39;CNTN2&#39; &#39;VSNL1&#39; &#39;PREPL&#39;
+ &#39;MDH1&#39; &#39;PPP3R1&#39; &#39;TMSB10&#39; &#39;IGKC&#39; &#39;MAL&#39; &#39;ERMN&#39; &#39;LRP2&#39; &#39;GAD1&#39; &#39;CHN1&#39; &#39;CCK&#39;
+ &#39;CLDN11&#39; &#39;LDB2&#39; &#39;SPP1&#39; &#39;HHIP&#39; &#39;TMEM144&#39; &#39;GPM6A&#39; &#39;SLC1A3&#39; &#39;ENC1&#39; &#39;EDIL3&#39;
+ &#39;RHOBTB3&#39; &#39;CXCL14&#39; &#39;GABRB2&#39; &#39;MOG&#39; &#39;TPBG&#39; &#39;ACTB&#39; &#39;NDUFA4&#39; &#39;RAPGEF5&#39; &#39;AQP1&#39;
+ &#39;YWHAG&#39; &#39;SLC26A4-AS1&#39; &#39;CD99&#39; &#39;GJB1&#39; &#39;NAP1L2&#39; &#39;LAMP2&#39; &#39;NEFM&#39; &#39;NEFL&#39;
+ &#39;STMN2&#39; &#39;CALB1&#39; &#39;ENPP2&#39; &#39;CERCAM&#39; &#39;OLFM1&#39; &#39;PTGDS&#39; &#39;SAA1&#39; &#39;FOLH1&#39; &#39;MYRF&#39;
+ &#39;FTH1&#39; &#39;SCGB2A2&#39; &#39;PLA2G16&#39; &#39;RTN3&#39; &#39;CARNS1&#39; &#39;HSPA8&#39; &#39;NRGN&#39; &#39;NKX6-2&#39;
+ &#39;TUBA1B&#39; &#39;KRT8&#39; &#39;KCNC2&#39; &#39;SYT1&#39; &#39;CUX2&#39; &#39;CABP1&#39; &#39;AACS&#39; &#39;RTN1&#39; &#39;HSPA2&#39;
+ &#39;PPP4R4&#39; &#39;GLDN&#39; &#39;NPTN&#39; &#39;HBA1&#39; &#39;CRYM&#39; &#39;SLC5A11&#39; &#39;AC009133.1&#39; &#39;PLLP&#39;
+ &#39;NDRG4&#39; &#39;CALB2&#39; &#39;KRT19&#39; &#39;KRT17&#39; &#39;GFAP&#39; &#39;NSF&#39; &#39;ANKRD40&#39; &#39;AATK&#39; &#39;MBP&#39;
+ &#39;SNAP25&#39; &#39;CST3&#39; &#39;MAG&#39; &#39;PPP1R14A&#39; &#39;CALM3&#39; &#39;RSPH14&#39; &#39;NEFH&#39; &#39;YWHAH&#39; &#39;OLIG1&#39;
+ &#39;PCP4&#39; &#39;MT-CO1&#39; &#39;MT-CO2&#39;]
+</pre></div></div>
+</div>
+</section>
+<section id="GeneCover-via-Greedy-Heuristics">
+<h2>GeneCover via Greedy Heuristics<a class="headerlink" href="#GeneCover-via-Greedy-Heuristics" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#obtain 100 marker genes via greedy heuristics</span>
-<span class="n">genecover_markers_greedy</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">genecover_markers_greedy</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;Greedy&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers_greedy</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -236,14 +274,14 @@ GeneCover markers:
 </pre></div></div>
 </div>
 </section>
-<section id="Iterative-GeneCover-via-Combinatorial-Optimization">
-<h2>Iterative GeneCover via Combinatorial Optimization<a class="headerlink" href="#Iterative-GeneCover-via-Combinatorial-Optimization" title="Link to this heading"></a></h2>
+<section id="Iterative-GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)">
+<h2>Iterative GeneCover via Combinatorial Optimization (Gurobi Solver)<a class="headerlink" href="#Iterative-GeneCover-via-Combinatorial-Optimization-(Gurobi-Solver)" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover with an incremental size of 100 and two iterations</span>
-<span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -261,7 +299,7 @@ Best Epsilon:  0.1367919921875
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers_iterative</span><span class="p">])</span>
@@ -302,14 +340,80 @@ Iterative GeneCover markers:
 </pre></div></div>
 </div>
 </section>
+<section id="Iterative-GeneCover-via-Combinatorial-Optimization-(SCIP-Solver)">
+<h2>Iterative GeneCover via Combinatorial Optimization (SCIP Solver)<a class="headerlink" href="#Iterative-GeneCover-via-Combinatorial-Optimization-(SCIP-Solver)" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover with an incremental size of 100 and two iterations</span>
+<span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;SCIP&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iteration 1
+Best Gap:  0
+Best Epsilon:  0.12958984375
+Iteration  2
+Best Gap:  0
+Best Epsilon:  0.137158203125
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers_iterative</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iterative GeneCover markers:
+ [[&#39;PADI2&#39; &#39;SYNC&#39; &#39;WDR47&#39; &#39;ATP1A1&#39; &#39;ATP1B1&#39; &#39;NME7&#39; &#39;CNTN2&#39; &#39;VSNL1&#39; &#39;PREPL&#39;
+  &#39;MDH1&#39; &#39;PPP3R1&#39; &#39;TMSB10&#39; &#39;IGKC&#39; &#39;MAL&#39; &#39;ERMN&#39; &#39;LRP2&#39; &#39;GAD1&#39; &#39;CHN1&#39; &#39;CCK&#39;
+  &#39;CLDN11&#39; &#39;LDB2&#39; &#39;SPP1&#39; &#39;HHIP&#39; &#39;TMEM144&#39; &#39;GPM6A&#39; &#39;SLC1A3&#39; &#39;ENC1&#39; &#39;EDIL3&#39;
+  &#39;RHOBTB3&#39; &#39;CXCL14&#39; &#39;GABRB2&#39; &#39;MOG&#39; &#39;TPBG&#39; &#39;ACTB&#39; &#39;NDUFA4&#39; &#39;RAPGEF5&#39;
+  &#39;AQP1&#39; &#39;YWHAG&#39; &#39;SLC26A4-AS1&#39; &#39;CD99&#39; &#39;GJB1&#39; &#39;NAP1L2&#39; &#39;LAMP2&#39; &#39;NEFM&#39;
+  &#39;NEFL&#39; &#39;STMN2&#39; &#39;CALB1&#39; &#39;ENPP2&#39; &#39;CERCAM&#39; &#39;OLFM1&#39; &#39;PTGDS&#39; &#39;SAA1&#39; &#39;FOLH1&#39;
+  &#39;MYRF&#39; &#39;FTH1&#39; &#39;SCGB2A2&#39; &#39;PLA2G16&#39; &#39;RTN3&#39; &#39;CARNS1&#39; &#39;HSPA8&#39; &#39;NRGN&#39;
+  &#39;NKX6-2&#39; &#39;TUBA1B&#39; &#39;KRT8&#39; &#39;KCNC2&#39; &#39;SYT1&#39; &#39;CUX2&#39; &#39;CABP1&#39; &#39;AACS&#39; &#39;RTN1&#39;
+  &#39;HSPA2&#39; &#39;PPP4R4&#39; &#39;GLDN&#39; &#39;NPTN&#39; &#39;HBA1&#39; &#39;CRYM&#39; &#39;SLC5A11&#39; &#39;AC009133.1&#39;
+  &#39;PLLP&#39; &#39;NDRG4&#39; &#39;CALB2&#39; &#39;KRT19&#39; &#39;KRT17&#39; &#39;GFAP&#39; &#39;NSF&#39; &#39;ANKRD40&#39; &#39;AATK&#39;
+  &#39;MBP&#39; &#39;SNAP25&#39; &#39;CST3&#39; &#39;MAG&#39; &#39;PPP1R14A&#39; &#39;CALM3&#39; &#39;RSPH14&#39; &#39;NEFH&#39; &#39;YWHAH&#39;
+  &#39;OLIG1&#39; &#39;PCP4&#39; &#39;MT-CO1&#39; &#39;MT-CO2&#39;]
+ [&#39;CLSTN1&#39; &#39;HPCA&#39; &#39;LMO4&#39; &#39;KCNA2&#39; &#39;CADM3&#39; &#39;RGS4&#39; &#39;HPCAL1&#39; &#39;FAM84A&#39;
+  &#39;SLC30A3&#39; &#39;CALM2&#39; &#39;R3HDM1&#39; &#39;ATP5MC3&#39; &#39;EPHA4&#39; &#39;ATP2B2&#39; &#39;SYN2&#39; &#39;MOBP&#39;
+  &#39;CLDND1&#39; &#39;TAGLN3&#39; &#39;TF&#39; &#39;RAB6B&#39; &#39;SERPINI1&#39; &#39;FAM131A&#39; &#39;PCDH7&#39; &#39;UCHL1&#39;
+  &#39;HOPX&#39; &#39;PPP3CA&#39; &#39;UGT8&#39; &#39;BASP1&#39; &#39;CARTPT&#39; &#39;MAP1B&#39; &#39;NREP&#39; &#39;ANXA6&#39; &#39;GABRA1&#39;
+  &#39;SNCB&#39; &#39;TUBB2A&#39; &#39;NRN1&#39; &#39;TSPYL1&#39; &#39;PRKAR1B&#39; &#39;DGKB&#39; &#39;ANLN&#39; &#39;VSTM2A&#39;
+  &#39;PHKG1&#39; &#39;TSPAN7&#39; &#39;PLP1&#39; &#39;CLU&#39; &#39;FABP4&#39; &#39;PDP1&#39; &#39;DIRAS2&#39; &#39;GABBR2&#39;
+  &#39;SLC44A1&#39; &#39;SLC31A2&#39; &#39;STXBP1&#39; &#39;AL359091.1&#39; &#39;ABCA2&#39; &#39;SCGB1D2&#39; &#39;C11orf87&#39;
+  &#39;CRYAB&#39; &#39;THY1&#39; &#39;HEPACAM&#39; &#39;SNCG&#39; &#39;LIPA&#39; &#39;GOT1&#39; &#39;SCD&#39; &#39;LHPP&#39; &#39;VAMP1&#39;
+  &#39;FAM19A2&#39; &#39;ATP2B1&#39; &#39;DCLK1&#39; &#39;HTR2A&#39; &#39;PCDH8&#39; &#39;HS6ST3&#39; &#39;RNASE1&#39; &#39;CALM1&#39;
+  &#39;CHGA&#39; &#39;ITPKA&#39; &#39;B2M&#39; &#39;CACNG3&#39; &#39;MT3&#39; &#39;FA2H&#39; &#39;CAMKK1&#39; &#39;LRRC75A&#39; &#39;CNP&#39;
+  &#39;TTYH2&#39; &#39;AQP4&#39; &#39;CNDP1&#39; &#39;CHGB&#39; &#39;SLC12A5&#39; &#39;CBLN4&#39; &#39;AC005944.1&#39; &#39;ABHD8&#39;
+  &#39;RAB3A&#39; &#39;TMEM59L&#39; &#39;HAPLN4&#39; &#39;SCN1B&#39; &#39;ATP1A3&#39; &#39;SLC17A7&#39; &#39;IGLC2&#39; &#39;SULT4A1&#39;
+  &#39;S100B&#39; &#39;MT-CO3&#39;]]
+</pre></div></div>
+</div>
+</section>
 <section id="Iterative-GeneCover-via-Greedy-Heuristics">
 <h2>Iterative GeneCover via Greedy Heuristics<a class="headerlink" href="#Iterative-GeneCover-via-Greedy-Heuristics" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover (Greedy Heuristics) with an incremental size of 100 and two iterations</span>
-<span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span><span class="o">=</span> <span class="s2">&quot;Greedy&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -327,7 +431,7 @@ Best Epsilon:  0.14765625
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">orig_gene</span><span class="p">[</span><span class="n">genecover_markers_iterative</span><span class="p">])</span>
@@ -374,7 +478,7 @@ Iterative GeneCover markers:
 <section id="Load-the-datasets-(Sample-#1515067,-#151669,-#151673)">
 <h2>Load the datasets (Sample #1515067, #151669, #151673)<a class="headerlink" href="#Load-the-datasets-(Sample-#1515067,-#151669,-#151673)" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Adata</span> <span class="o">=</span> <span class="p">{}</span>
@@ -429,7 +533,7 @@ c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata
 <section id="Compute-Correlation-Matrices-for-Every-Sample">
 <h2>Compute Correlation Matrices for Every Sample<a class="headerlink" href="#Compute-Correlation-Matrices-for-Every-Sample" title="Link to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corr_mat_combine_across_samples</span> <span class="o">=</span> <span class="n">gene_gene_correlation</span><span class="p">([</span><span class="n">Adata</span><span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">across_samples_file_names</span><span class="p">])</span>
@@ -437,14 +541,14 @@ c:\Users\An Wang\.conda\envs\vae-spatial\lib\site-packages\anndata\_core\anndata
 </div>
 </div>
 </section>
-<section id="GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples">
-<h2>GeneCover Marker Selection via Combinatorial Optimization Across Samples<a class="headerlink" href="#GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples" title="Link to this heading"></a></h2>
+<section id="GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples-(Gurobi-Solver)">
+<h2>GeneCover Marker Selection via Combinatorial Optimization Across Samples (Gurobi Solver)<a class="headerlink" href="#GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples-(Gurobi-Solver)" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 100 marker genes across samples</span>
-<span class="n">genecover_marker_across_samples</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span> <span class="o">=</span> <span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">genecover_marker_across_samples</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span> <span class="o">=</span> <span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -472,14 +576,49 @@ GeneCover markers:
 </pre></div></div>
 </div>
 </section>
+<section id="GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples-(SCIP-Solver)">
+<h2>GeneCover Marker Selection via Combinatorial Optimization Across Samples (SCIP Solver)<a class="headerlink" href="#GeneCover-Marker-Selection-via-Combinatorial-Optimization-Across-Samples-(SCIP-Solver)" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 100 marker genes across samples</span>
+<span class="n">genecover_marker_across_samples</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span> <span class="o">=</span> <span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">lambdaMax</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span><span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;SCIP&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Best Gap:  0
+Best Epsilon:  0.10302734375
+GeneCover markers:
+ [&#39;AC005944.1&#39; &#39;AC009133.1&#39; &#39;AC092069.1&#39; &#39;ACTB&#39; &#39;ALDOA&#39; &#39;AP3B2&#39; &#39;APP&#39;
+ &#39;ATL1&#39; &#39;ATP1A1&#39; &#39;ATP1B1&#39; &#39;BASP1&#39; &#39;CARNS1&#39; &#39;CCK&#39; &#39;CHN1&#39; &#39;CLSTN2&#39; &#39;CLSTN3&#39;
+ &#39;CLU&#39; &#39;CRYM&#39; &#39;DYNC1I1&#39; &#39;EIF1B&#39; &#39;ENC1&#39; &#39;EPHA4&#39; &#39;FABP4&#39; &#39;G0S2&#39; &#39;GABRA1&#39;
+ &#39;GAD1&#39; &#39;GAP43&#39; &#39;GFAP&#39; &#39;GPM6A&#39; &#39;GPRC5B&#39; &#39;HBB&#39; &#39;HOPX&#39; &#39;HPCAL1&#39; &#39;HSP90AB1&#39;
+ &#39;IFI27&#39; &#39;IGHA1&#39; &#39;IGKC&#39; &#39;KRT17&#39; &#39;KRT19&#39; &#39;KRT8&#39; &#39;LDB2&#39; &#39;LMO4&#39; &#39;MAP1B&#39; &#39;MBP&#39;
+ &#39;MDH1&#39; &#39;MICAL2&#39; &#39;MOAP1&#39; &#39;MOBP&#39; &#39;MT-ND2&#39; &#39;MT3&#39; &#39;NDRG4&#39; &#39;NECAB1&#39; &#39;NEFH&#39;
+ &#39;NEFL&#39; &#39;NEFM&#39; &#39;NELL2&#39; &#39;NME7&#39; &#39;NRGN&#39; &#39;NRN1&#39; &#39;NSF&#39; &#39;OAT&#39; &#39;OLFM1&#39; &#39;PAK1&#39;
+ &#39;PDP1&#39; &#39;PFKP&#39; &#39;PHKG1&#39; &#39;PLIN1&#39; &#39;PLP1&#39; &#39;RAB3A&#39; &#39;RPLP1&#39; &#39;RTN1&#39; &#39;RTN3&#39;
+ &#39;SCGB2A2&#39; &#39;SERPINF1&#39; &#39;SH3BGRL2&#39; &#39;SLC17A7&#39; &#39;SLC1A2&#39; &#39;SLC24A2&#39; &#39;SNAP25&#39;
+ &#39;SNCA&#39; &#39;SNCB&#39; &#39;SPP1&#39; &#39;STMN1&#39; &#39;STMN2&#39; &#39;STXBP1&#39; &#39;SYNC&#39; &#39;SYNGR1&#39; &#39;SYT1&#39;
+ &#39;SYT4&#39; &#39;TBR1&#39; &#39;TFF1&#39; &#39;TMEM38A&#39; &#39;TMEM59L&#39; &#39;TMSB10&#39; &#39;TUBA1B&#39; &#39;TUBB2A&#39;
+ &#39;UCHL1&#39; &#39;VSNL1&#39; &#39;WDR47&#39; &#39;YWHAG&#39;]
+</pre></div></div>
+</div>
+</section>
 <section id="GeneCover-Marker-Selection-via-Greedy-Heuristics-Across-Samples">
 <h2>GeneCover Marker Selection via Greedy Heuristics Across Samples<a class="headerlink" href="#GeneCover-Marker-Selection-via-Greedy-Heuristics-Across-Samples" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 100 marker genes across samples via greedy heuristics</span>
-<span class="n">genecover_marker_across_samples_greedy</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span> <span class="o">=</span> <span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">genecover_marker_across_samples_greedy</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span><span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">corr_mat</span> <span class="o">=</span> <span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span><span class="o">=</span> <span class="s2">&quot;Greedy&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples_greedy</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -507,14 +646,14 @@ GeneCover markers:
 </pre></div></div>
 </div>
 </section>
-<section id="Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples">
-<h2>Iterative GeneCover via Combinatorial Optimization Across Samples<a class="headerlink" href="#Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples" title="Link to this heading"></a></h2>
+<section id="Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples-(Gurobi-Solver)">
+<h2>Iterative GeneCover via Combinatorial Optimization Across Samples (Gurobi Solver)<a class="headerlink" href="#Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples-(Gurobi-Solver)" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover with an incremental size of 100 and two iterations</span>
-<span class="n">genecover_marker_across_samples</span> <span class="o">=</span> <span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">genecover_marker_across_samples</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;Gurobi&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -532,7 +671,7 @@ Best Epsilon:  0.10310058593749999
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples</span><span class="p">])</span>
@@ -572,14 +711,79 @@ Iterative GeneCover markers:
 </pre></div></div>
 </div>
 </section>
-<section id="Iterative-GeneCover-via-Greedy-Heuristics-Across-Samples">
-<h2>Iterative GeneCover via Greedy Heuristics Across Samples<a class="headerlink" href="#Iterative-GeneCover-via-Greedy-Heuristics-Across-Samples" title="Link to this heading"></a></h2>
+<section id="Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples-(SCIP-Solver)">
+<h2>Iterative GeneCover via Combinatorial Optimization Across Samples (SCIP Solver)<a class="headerlink" href="#Iterative-GeneCover-via-Combinatorial-Optimization-Across-Samples-(SCIP-Solver)" title="Link to this heading"></a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover with an incremental size of 100 and two iterations</span>
-<span class="n">genecover_marker_across_samples_greedy</span> <span class="o">=</span> <span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="n">lambdaMin</span> <span class="o">=</span> <span class="mf">.08</span><span class="p">,</span> <span class="n">lambdaMax</span> <span class="o">=</span> <span class="mf">.2</span><span class="p">,</span> <span class="n">greedy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">genecover_marker_across_samples</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">lambdaMax</span><span class="o">=</span><span class="mf">.2</span> <span class="p">,</span><span class="n">solver</span> <span class="o">=</span> <span class="s2">&quot;SCIP&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iteration 1
+Best Gap:  0
+Best Epsilon:  0.10302734375
+Iteration  2
+Best Gap:  0
+Best Epsilon:  0.102752685546875
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Iterative GeneCover markers:
+ [[&#39;AC005944.1&#39; &#39;AC009133.1&#39; &#39;AC092069.1&#39; &#39;ACTB&#39; &#39;ALDOA&#39; &#39;AP3B2&#39; &#39;APP&#39;
+  &#39;ATL1&#39; &#39;ATP1A1&#39; &#39;ATP1B1&#39; &#39;BASP1&#39; &#39;CARNS1&#39; &#39;CCK&#39; &#39;CHN1&#39; &#39;CLSTN2&#39;
+  &#39;CLSTN3&#39; &#39;CLU&#39; &#39;CRYM&#39; &#39;DYNC1I1&#39; &#39;EIF1B&#39; &#39;ENC1&#39; &#39;EPHA4&#39; &#39;FABP4&#39; &#39;G0S2&#39;
+  &#39;GABRA1&#39; &#39;GAD1&#39; &#39;GAP43&#39; &#39;GFAP&#39; &#39;GPM6A&#39; &#39;GPRC5B&#39; &#39;HBB&#39; &#39;HOPX&#39; &#39;HPCAL1&#39;
+  &#39;HSP90AB1&#39; &#39;IFI27&#39; &#39;IGHA1&#39; &#39;IGKC&#39; &#39;KRT17&#39; &#39;KRT19&#39; &#39;KRT8&#39; &#39;LDB2&#39; &#39;LMO4&#39;
+  &#39;MAP1B&#39; &#39;MBP&#39; &#39;MDH1&#39; &#39;MICAL2&#39; &#39;MOAP1&#39; &#39;MOBP&#39; &#39;MT-ND2&#39; &#39;MT3&#39; &#39;NDRG4&#39;
+  &#39;NECAB1&#39; &#39;NEFH&#39; &#39;NEFL&#39; &#39;NEFM&#39; &#39;NELL2&#39; &#39;NME7&#39; &#39;NRGN&#39; &#39;NRN1&#39; &#39;NSF&#39; &#39;OAT&#39;
+  &#39;OLFM1&#39; &#39;PAK1&#39; &#39;PDP1&#39; &#39;PFKP&#39; &#39;PHKG1&#39; &#39;PLIN1&#39; &#39;PLP1&#39; &#39;RAB3A&#39; &#39;RPLP1&#39;
+  &#39;RTN1&#39; &#39;RTN3&#39; &#39;SCGB2A2&#39; &#39;SERPINF1&#39; &#39;SH3BGRL2&#39; &#39;SLC17A7&#39; &#39;SLC1A2&#39;
+  &#39;SLC24A2&#39; &#39;SNAP25&#39; &#39;SNCA&#39; &#39;SNCB&#39; &#39;SPP1&#39; &#39;STMN1&#39; &#39;STMN2&#39; &#39;STXBP1&#39; &#39;SYNC&#39;
+  &#39;SYNGR1&#39; &#39;SYT1&#39; &#39;SYT4&#39; &#39;TBR1&#39; &#39;TFF1&#39; &#39;TMEM38A&#39; &#39;TMEM59L&#39; &#39;TMSB10&#39;
+  &#39;TUBA1B&#39; &#39;TUBB2A&#39; &#39;UCHL1&#39; &#39;VSNL1&#39; &#39;WDR47&#39; &#39;YWHAG&#39;]
+ [&#39;AC011603.2&#39; &#39;ADD2&#39; &#39;AK5&#39; &#39;APBA2&#39; &#39;ATP1B2&#39; &#39;ATP5F1A&#39; &#39;ATP6AP2&#39;
+  &#39;ATP6V1B2&#39; &#39;BEX1&#39; &#39;CABP1&#39; &#39;CACNB1&#39; &#39;CALM3&#39; &#39;CAMK2D&#39; &#39;CAP2&#39; &#39;CARTPT&#39;
+  &#39;CDKN2D&#39; &#39;CHGA&#39; &#39;CHGB&#39; &#39;CLDN11&#39; &#39;CNP&#39; &#39;CREG2&#39; &#39;CRYAB&#39; &#39;CST3&#39; &#39;CX3CL1&#39;
+  &#39;DCLK1&#39; &#39;DNAJB6&#39; &#39;DNAJC6&#39; &#39;DNM1&#39; &#39;DNM3&#39; &#39;EFHD2&#39; &#39;EHD3&#39; &#39;EPDR1&#39; &#39;ERMN&#39;
+  &#39;FBXW7&#39; &#39;FKBP1A&#39; &#39;G3BP2&#39; &#39;GABRG2&#39; &#39;GAPDH&#39; &#39;GGCX&#39; &#39;GLS&#39; &#39;GOT1&#39; &#39;HLA-B&#39;
+  &#39;HMGCS1&#39; &#39;HSP90AA1&#39; &#39;HSPA8&#39; &#39;IGLC2&#39; &#39;KCNK1&#39; &#39;KIFAP3&#39; &#39;LRRC75A&#39; &#39;MAPRE3&#39;
+  &#39;MAPT&#39; &#39;MGP&#39; &#39;MTRNR2L8&#39; &#39;MUC1&#39; &#39;NAP1L2&#39; &#39;NCALD&#39; &#39;NCOA7&#39; &#39;NDFIP1&#39;
+  &#39;NMNAT2&#39; &#39;NPTN&#39; &#39;NUAK1&#39; &#39;NUDT4&#39; &#39;OXR1&#39; &#39;PCP4&#39; &#39;PGK1&#39; &#39;PI4KA&#39; &#39;PIK3R1&#39;
+  &#39;PNMA8A&#39; &#39;PPP3R1&#39; &#39;PREPL&#39; &#39;PRKCE&#39; &#39;PRNP&#39; &#39;PRPF19&#39; &#39;PTGDS&#39; &#39;PTPN5&#39;
+  &#39;RAB15&#39; &#39;RAB3C&#39; &#39;REEP1&#39; &#39;RPS12&#39; &#39;RTN4&#39; &#39;SAA1&#39; &#39;SCGB1D2&#39; &#39;SCN2A&#39; &#39;SCN3B&#39;
+  &#39;SERPINI1&#39; &#39;SH3GL2&#39; &#39;SNX10&#39; &#39;SV2A&#39; &#39;SV2B&#39; &#39;SYP&#39; &#39;TAGLN3&#39; &#39;TF&#39; &#39;THY1&#39;
+  &#39;TOLLIP&#39; &#39;TRIM37&#39; &#39;TUBA4A&#39; &#39;VPS35&#39; &#39;WASF1&#39; &#39;YWHAB&#39; &#39;YWHAH&#39;]]
+</pre></div></div>
+</div>
+</section>
+<section id="Iterative-GeneCover-via-Greedy-Heuristics-Across-Samples">
+<h2>Iterative GeneCover via Greedy Heuristics Across Samples<a class="headerlink" href="#Iterative-GeneCover-via-Greedy-Heuristics-Across-Samples" title="Link to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obtain 200 marker genes via Iterative GeneCover with an incremental size of 100 and two iterations</span>
+<span class="n">genecover_marker_across_samples_greedy</span> <span class="o">=</span> <span class="n">genecover_markers_iterative</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span><span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span> <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat_combine_across_samples</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">corr_mat_combine_across_samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="n">lambdaMin</span> <span class="o">=</span> <span class="mf">.08</span><span class="p">,</span> <span class="n">lambdaMax</span> <span class="o">=</span> <span class="mf">.2</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span> <span class="s2">&quot;Greedy&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -597,7 +801,7 @@ Best Epsilon:  0.11213867187500001
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Iterative GeneCover markers: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">genes_across_samples</span><span class="p">[</span><span class="n">genecover_marker_across_samples_greedy</span><span class="p">])</span>

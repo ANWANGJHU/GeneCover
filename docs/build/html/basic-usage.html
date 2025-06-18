@@ -48,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#required-imports">Required Imports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data-format">Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#main-inputs">Main Inputs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gene-gene-correlation">Gene-Gene Correlation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#gene-selection-single-run">Gene Selection (Single Run)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#iterative-gene-selection">Iterative Gene Selection</a></li>
@@ -94,8 +94,8 @@
 </pre></div>
 </div>
 </section>
-<section id="data-format">
-<h2>Data Format<a class="headerlink" href="#data-format" title="Link to this heading"></a></h2>
+<section id="main-inputs">
+<h2>Main Inputs<a class="headerlink" href="#main-inputs" title="Link to this heading"></a></h2>
 <ul>
 <li><p><strong>data</strong>: A NumPy array of shape <cite>(N, d)</cite> storing gene expression measurements,
 where <cite>N</cite> is the number of cells/spots and <cite>d</cite> is the number of genes.</p>
@@ -106,6 +106,15 @@ A simple choice is:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
+</li>
+<li><dl class="simple">
+<dt><strong>solver:</strong> A string indicating which solver to use for gene selection. Options include:</dt><dd><ul class="simple">
+<li><p><cite>“Gurobi”</cite>: the Gurobi solver for integer programming.</p></li>
+<li><p><cite>“SCIP”</cite>: the SCIP solver for integer programming.</p></li>
+<li><p><cite>“Greedy”</cite>: the greedy heuristic for gene selection.</p></li>
+</ul>
+</dd>
+</dl>
 </li>
 </ul>
 </section>
@@ -118,19 +127,12 @@ A simple choice is:</p>
 </section>
 <section id="gene-selection-single-run">
 <h2>Gene Selection (Single Run)<a class="headerlink" href="#gene-selection-single-run" title="Link to this heading"></a></h2>
-<p>Obtain 100 marker genes using the standard GeneCover optimization:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span>
-    <span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span>
-    <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>or obtain 100 marker genes using the greedy heuristic approach, which does not require Gurobi:</p>
+<p>Obtain 100 marker genes using the standard Gurobi optimization:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span> <span class="o">=</span> <span class="n">GeneCover</span><span class="p">(</span>
     <span class="n">num_marker</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span>
     <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
-    <span class="n">greedy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -140,15 +142,8 @@ A simple choice is:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iterative_markers</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span>
     <span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
     <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span>
-    <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>You can also use the greedy heuristic for iterative selection:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iterative_markers</span> <span class="o">=</span> <span class="n">Iterative_GeneCover</span><span class="p">(</span>
-    <span class="n">incremental_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
-    <span class="n">corr_mat</span><span class="o">=</span><span class="n">corr_mat</span><span class="p">,</span>
     <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
-    <span class="n">greedy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
